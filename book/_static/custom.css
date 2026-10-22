@@ -1,0 +1,49 @@
+/* Justificar los párrafos sin afectar títulos, tablas ni bloques de código. */
+article p:not(:where(table *, pre *, code *)),
+main p:not(:where(table *, pre *, code *)),
+.content p:not(:where(table *, pre *, code *)) {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Créditos al pie de la barra lateral izquierda. */
+.myst-primary-sidebar-footer .myst-primary-sidebar-footer {
+  padding: 0 0.75rem;
+}
+
+.myst-primary-sidebar-footer p {
+  margin: 0;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.myst-primary-sidebar-footer p + p {
+  margin-top: 0.35rem;
+}
+
+/* Correcciones a la retroalimentación del profesor: visibles también al imprimir. */
+.correccion-profesor {
+  background-color: #fff3a3 !important;
+  color: #18212b !important;
+  border-left: 0.3rem solid #c28a00;
+  border-radius: 0.25rem;
+  padding: 1rem 1.15rem;
+  margin: 1.25rem 0;
+  color-scheme: light;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.correccion-profesor :is(p, li, h2, h3, h4, strong, em, th, td, figcaption) {
+  color: #18212b !important;
+}
+
+.correccion-profesor a {
+  color: #124b86 !important;
+  text-decoration: underline;
+}
+
+.correccion-profesor :is(table, thead, tbody, tr, th, td) {
+  background-color: transparent !important;
+}
