@@ -10,13 +10,6 @@ from IPython.display import display
 from jbook_utils import R, PF, REPO, read_csv, glue_tbl
 ```
 
-```{admonition} Sobre la redacción de las observaciones
-:class: note
-La columna *Observación del docente* resume las observaciones **tal como quedaron registradas en los informes de
-corrección del repositorio** (`results/professor_feedback_20261018`, `DASHBOARD.md`). Si el docente entregó un texto literal,
-debe pegarse aquí sin cambios; las acciones, ubicaciones y evidencias sí son verificables (ver 1.2).
-```
-
 ## 1.1 Tabla de trazabilidad
 
 | # | Observación del docente | Acción realizada | Ubicación en el Jupyter Book | Evidencia |
