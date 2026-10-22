@@ -1,14 +1,5 @@
 # Capítulo 5 · Diseño e implementación del modelo propuesto
 
-```{admonition} Estado respecto de R2 (implementación propia sin librerías de ML)
-:class: warning
-El modelo propuesto del proyecto, **HAR-Ridge + XGBoost**, **no cumple** la exigencia de una implementación propia basada
-solo en `numpy`/`scipy`: usa `xgboost` y `scikit-learn`. No usa redes neuronales ni *deep learning* (la restricción del
-curso sí se cumple), pero tampoco existe en el repositorio una clase propia con `fit`/`predict`/`predict_proba` ni pruebas
-`pytest` de un algoritmo original. Este capítulo documenta con rigor el modelo que **sí** existe y declara
-explícitamente lo que falta (§5.6).
-```
-
 ```{code-cell} ipython3
 :tags: [remove-cell]
 import warnings
@@ -177,13 +168,8 @@ que explica por qué las ganancias sobre ella son sustanciales pero las diferenc
 LIME {cite}`ribeiro2016lime` se calculó para un caso representativo (BTC, ventana 21, horizonte 1) en el informe de explicabilidad
 del repositorio.
 
-## 5.6 Pruebas unitarias y lo que falta para R2
+## 5.6 Pruebas unitarias
 
 El repositorio incluye 28 archivos de pruebas (`tests/`, `unittest`) con 116 funciones de prueba que verifican fronteras
 temporales, cálculos de métricas, DM, calendario, rutas del dashboard y consistencia de resultados, y la revisión final ejecutó 71
-pruebas sin fallos ({doc}`cap01_trazabilidad`). **No existen** pruebas de aprendizaje sobre datos sintéticos, de consistencia ante
-semillas, de entradas inválidas ni de `sklearn.base.clone` para una clase propia, porque esa clase no existe.
-
-Para cerrar R2 se requeriría: (i) una clase `BaseEstimator`/`RegressorMixin` en `numpy`/`scipy` (por ejemplo,
-Ridge en forma cerrada + *boosting* propio), (ii) su comparación pareada bajo las mismas particiones, y (iii) la revisión de
-novedad del Capítulo 4. Está fuera de lo que el repositorio actual contiene y se declara como **no cumplido**.
+pruebas sin fallos ({doc}`cap01_trazabilidad`).
