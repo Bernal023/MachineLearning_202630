@@ -52,7 +52,7 @@ Matriz de novedad (muestra de 8 de 20 filas; 4 bases × 5 cadenas). Los recuento
 | XGBoost | {cite}`chen2016xgboost` | *Boosting* de árboles | Es el componente no lineal. |
 | SVR | {cite}`drucker1997svr` | Regresión por vectores soporte | Benchmark del estudio. |
 
-## 4.3 Antecedentes localizados (búsqueda web preliminar, 21-oct-2026)
+## 4.3 Antecedentes localizados
 
 Dos búsquedas web generales (no sistemáticas; no sustituyen la matriz de §4.1) mostraron que **no es nuevo** usar ML, XGBoost o HAR para
 la volatilidad de criptomonedas:
