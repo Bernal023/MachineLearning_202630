@@ -1,0 +1,13 @@
+format: jb-book
+root: intro
+chapters:
+  - file: cap01_trazabilidad
+  - file: cap02_datos_etl_eda
+  - file: cap03_benchmark
+  - file: cap04_literatura_novedad
+  - file: cap05_modelo_original
+  - file: cap06_validacion_estadistica
+  - file: cap07_dashboard_despliegue
+  - file: cap08_conclusiones
+  - file: cap09_reproducibilidad
+  - file: referencias
