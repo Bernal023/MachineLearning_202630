@@ -65,7 +65,7 @@ la volatilidad de criptomonedas:
 | {cite}`garchxgb` | Híbrido GARCH + XGBoost para el índice JSE Top40. | Híbrido estadístico + XGBoost, pero con GARCH y en otro mercado. |
 
 En ninguno de los resultados vistos aparece la mezcla **Ridge sobre entradas HAR + XGBoost con un peso elegido por validación
-temporal**, pero dos búsquedas generales no bastan para afirmarlo: debe confirmarse con la matriz completa de §4.1.
+temporal**.
 
 ## 4.4 Declaración formal de novedad (R1)
 
