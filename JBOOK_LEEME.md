@@ -7,7 +7,7 @@ book/_config.yml  book/_toc.yml  book/references.bib  book/jbook_utils.py
 book/intro.md  book/cap01_… cap09_….md  book/referencias.md
 artifacts/{metadata.json, model_manifest.csv}
 src/build_artifacts_metadata.py  src/check_jbook_cells.py
-requirements-book.txt   .github/workflows/jupyter-book-pages.yml
+README.md  requirements-book.txt   .github/workflows/jupyter-book-pages.yml
 ```
 
 1. **Desactivar el despliegue anterior:** borrar `.github/workflows/deploy.yml` (MyST/`mystmd`); ambos publican en Pages y se pisarían.

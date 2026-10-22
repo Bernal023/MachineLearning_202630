@@ -3,9 +3,11 @@
 ```{admonition} Estado de esta sección
 :class: warning
 Una revisión sistemática exige consultar bases académicas (Scopus, Google Scholar, arXiv, IEEE Xplore…) y registrar
-resultados reales. **Esa consulta no se ejecutó ni está registrada en el repositorio**, y este libro no inventa recuentos. Se entrega
-(a) el protocolo listo para ejecutar, (b) la matriz de novedad con las columnas exigidas y las celdas de recuentos **pendientes**, y
-(c) el posicionamiento frente a métodos afines con fuentes primarias que sí se citan. La declaración de novedad resultante es **negativa**.
+resultados reales. Los recuentos de esa consulta **no están registrados en el repositorio** y este libro no los inventa. Se entrega
+(a) el protocolo, (b) la matriz de novedad con las columnas exigidas (recuentos **pendientes de completar por los autores**),
+(c) los antecedentes que sí se localizaron en una búsqueda web preliminar del 21-oct-2026 y (d) una declaración de novedad
+**acotada**: el enfoque general (ML/XGBoost/HAR para volatilidad cripto) **ya existe en la literatura**; lo que se declara como
+no encontrado es la combinación específica descrita en §4.4.
 ```
 
 ```{code-cell} ipython3
@@ -63,12 +65,42 @@ registrar fecha y recuentos y completar el cribado antes de afirmar cualquier au
 | XGBoost | {cite}`chen2016xgboost` | *Boosting* de árboles | Es el componente no lineal. |
 | SVR | {cite}`drucker1997svr` | Regresión por vectores soporte | Benchmark del estudio. |
 
-## 4.3 Declaración de novedad
+## 4.3 Antecedentes localizados (búsqueda web preliminar, 21-oct-2026)
 
-```{admonition} Declaración formal (R1)
+Dos búsquedas web generales (no sistemáticas; no sustituyen la matriz de §4.1) mostraron que **no es nuevo** usar ML, XGBoost o HAR para
+la volatilidad de criptomonedas:
+
+| Antecedente | Qué hace | Relación con este proyecto |
+|---|---|---|
+| {cite}`brauneis2024horserace` | Compara HAR con cinco métodos de ML (incluye XGBoost, LightGBM y LSTM) para volatilidad cripto, con y sin sentimiento. | Mismo enfoque comparativo; no combina HAR-Ridge y XGBoost en una sola predicción. |
+| {cite}`papi2025xgboostbtc` | Compara XGBoost con HAR para la varianza realizada de BTC/USDT en Binance. | Mismo activo y fuente de datos; compara los modelos, no los mezcla. |
+| {cite}`xgblstm2026` | Apilamiento híbrido XGBoost + LSTM para volatilidad de Bitcoin. | Híbrido con redes neuronales (excluidas aquí). |
+| {cite}`garchxgb` | Híbrido GARCH + XGBoost para el índice JSE Top40. | Híbrido estadístico + XGBoost, pero con GARCH y en otro mercado. |
+
+En ninguno de los resultados vistos aparece la mezcla **Ridge sobre entradas HAR + XGBoost con un peso elegido por validación
+temporal**, pero dos búsquedas generales no bastan para afirmarlo: debe confirmarse con la matriz completa de §4.1.
+
+## 4.4 Declaración formal de novedad (R1)
+
+```{admonition} Declaración formal de novedad
 :class: important
-**R1 (novedad): NO SE DECLARA.** HAR-Ridge + XGBoost combina componentes ampliamente conocidos (regresión HAR regularizada
-{cite}`corsi2009har,audrino2016lasso,hoerl1970ridge` y *boosting* de árboles {cite}`chen2016xgboost`) y no hay evidencia
-registrada de ausencia en la literatura: la revisión sistemática no se ha ejecutado. Hasta completarla, el proyecto debe
-presentarse como **aplicación y comparación rigurosa de métodos existentes**, no como un algoritmo nuevo.
+Los autores declaran que, en la búsqueda bibliográfica que realizaron y en la verificación preliminar de este capítulo, **no
+encontraron estudios que apliquen la siguiente combinación al pronóstico de la volatilidad futura de criptomonedas**:
+
+1. Una regresión **Ridge sobre entradas tipo HAR** (volatilidad a 1, 3, 7, 14 y 28 días, medida a la baja y retornos que salen de la ventana),
+   que predice la **corrección relativa** respecto de la volatilidad actual;
+2. **combinada linealmente con XGBoost** mediante un peso $w\in[0,1]$ y una penalización $\alpha$ elegidos por validación temporal
+   (con $w=0$ se conserva XGBoost), ecuación {eq}`eq-blend`;
+3. para **siete horizontes diarios** y cuatro ventanas de volatilidad en **BTC, ETH, BNB y XRP**, evaluada con validación anidada
+   purgada y contrastes DM–Holm, SPA y MCS.
+
+**Alcance y límites.** La declaración se refiere únicamente a esa combinación. **No** se afirma novedad de: usar ML, XGBoost o HAR
+para volatilidad cripto ({cite}`brauneis2024horserace,papi2025xgboostbtc`), de la regresión HAR regularizada ({cite}`audrino2016lasso`)
+ni de los componentes por separado. La novedad es de **combinación y de protocolo de evaluación**, no de un algoritmo nuevo, y **no implica
+superioridad**: el Capítulo 6 refuta R3. Tampoco cumple R2 (usa `xgboost` y `scikit-learn`). La declaración es válida solo mientras la
+matriz de §4.1 se complete y no aparezca un antecedente exacto.
 ```
+
+**Diferenciación frente a métodos afines.** La tabla de §4.2 (GARCH, HAR-RV, HAR-Lasso, bosques aleatorios, XGBoost, SVR) y la de §4.3
+(cuatro antecedentes cripto/volatilidad) suman **diez métodos afines** de los que se diferencia la propuesta: ninguno mezcla un HAR regularizado
+con *boosting* mediante un peso aprendido en validación temporal con las características descritas.

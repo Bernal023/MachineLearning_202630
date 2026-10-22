@@ -50,13 +50,13 @@ un piloto acotado y no un ranking universal de optimizadores.
 
 | Condición | Veredicto | Justificación |
 |---|---|---|
-| **R1 — Novedad** | **No cumplida / no verificada** | Componentes conocidos; la revisión sistemática no se ejecutó (Cap. 4). |
+| **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto); condicionada a completar la matriz de búsqueda (Cap. 4). |
 | **R2 — Implementación propia (numpy/scipy)** | **No cumplida** | El modelo usa `xgboost` y `scikit-learn`; no hay clase propia ni pruebas `pytest` (Cap. 5). |
 | **R3 — Superioridad estadística** | **Refutada** | Ninguna candidata supera al vigente: DM–Holm, SPA, MCS e IC no lo respaldan (Cap. 6). |
 
 ```{admonition} Tope de calificación
 :class: important
-Con R1, R2 y R3 sin cumplirse, corresponde presumiblemente el **tope inferior** de la escala de la rúbrica (la
+Con R2 sin cumplirse y R3 refutada (R1 solo declarada de forma acotada y condicionada), corresponde presumiblemente el **tope inferior** de la escala de la rúbrica (la
 rúbrica menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo
 ajusta: reporta los hechos para que la decisión sea verificable.
 ```
@@ -65,7 +65,7 @@ ajusta: reporta los hechos para que la decisión sea verificable.
 
 - **Sin periodo confirmatorio:** 2025 y enero–agosto de 2026 fueron explorados repetidamente.
 - **Estacionariedad:** solo se documentó descriptivamente (Cap. 2); no se reportan pruebas ADF/KPSS.
-- **Revisión de literatura no ejecutada** (Cap. 4) y **capturas del dashboard pendientes** (Cap. 7).
+- **Matriz de búsqueda sin recuentos** (Cap. 4): la declaración de novedad queda condicionada a completarla y **capturas del dashboard pendientes** (Cap. 7).
 - **Modelos serializados:** los `.joblib` de los 512 pipelines no están versionados; solo sus hashes.
 - **Desviaciones de la rúbrica** (Cap. 6): intervalos por percentiles y no BCa; $d_z$ de Cohen y no $\delta$ de Cliff; Holm y no Benjamini–Hochberg.
 - **Rúbrica de clasificación vs. problema de regresión:** no aplican balanceo de clases ni DeLong/McNemar; las «140 combinaciones» son 512 modelos.
