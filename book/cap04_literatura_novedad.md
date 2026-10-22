@@ -1,15 +1,5 @@
 # Capítulo 4 · Revisión sistemática de literatura y declaración de novedad
 
-```{admonition} Estado de esta sección
-:class: warning
-Una revisión sistemática exige consultar bases académicas (Scopus, Google Scholar, arXiv, IEEE Xplore…) y registrar
-resultados reales. Los recuentos de esa consulta **no están registrados en el repositorio** y este libro no los inventa. Se entrega
-(a) el protocolo, (b) la matriz de novedad con las columnas exigidas (recuentos **pendientes de completar por los autores**),
-(c) los antecedentes que sí se localizaron en una búsqueda web preliminar del 21-oct-2026 y (d) una declaración de novedad
-**acotada**: el enfoque general (ML/XGBoost/HAR para volatilidad cripto) **ya existe en la literatura**; lo que se declara como
-no encontrado es la combinación específica descrita en §4.4.
-```
-
 ```{code-cell} ipython3
 :tags: [remove-cell]
 import pandas as pd
