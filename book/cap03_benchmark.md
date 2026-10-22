@@ -18,9 +18,6 @@ plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": .3,
 
 ## 3.1 Espacio de modelos evaluado
 
-La plantilla de la rúbrica menciona «140 combinaciones». En este proyecto, de regresión, el espacio
-real es el siguiente y es el que se reporta:
-
 - **7 familias de regresión base:** k-NN, Ridge {cite}`hoerl1970ridge`, Lasso {cite}`tibshirani1996lasso`,
   árbol de decisión, *random forest* {cite}`breiman2001random`, XGBoost {cite}`chen2016xgboost` y SVR
   {cite}`drucker1997svr`; más la familia **híbrida HAR-XG** (Ridge sobre entradas HAR + XGBoost).
