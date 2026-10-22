@@ -9,7 +9,7 @@ from jbook_utils import glue_tbl
 
 ## 4.1 Protocolo de revisión
 
-- **Bases de datos (≥3):** Scopus, IEEE Xplore, Google Scholar y arXiv (q-fin.ST / stat.ML).
+- **Bases de datos:** Scopus y Web of science.
 - **Periodo:** 2009–2026 (desde la formulación del HAR {cite}`corsi2009har`).
 - **Criterios de inclusión:** pronóstico de volatilidad (realizada o rodante) de criptoactivos; modelos HAR, ML o híbridos;
   evaluación fuera de muestra con pérdida explícita. **Exclusión:** pronóstico de precio/rentabilidad; solo redes neuronales; sin evaluación fuera de muestra.
