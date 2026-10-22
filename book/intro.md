@@ -29,15 +29,6 @@ procedimientos de búsqueda × 16 configuraciones, más 64 híbridos HAR-XG) con
 sólida al modelo vigente**. Ese resultado negativo se reporta tal cual en los capítulos
 6 y 8.
 
-```{admonition} Alcance y estado de la evidencia
-:class: warning
-Los periodos 2025 y enero–agosto de 2026 ya fueron examinados repetidamente durante el
-desarrollo; por eso todas las evaluaciones fuera de muestra son **retrospectivas** y no
-constituyen una prueba confirmatoria. Además, el modelo vigente usa `xgboost` y `scikit-learn`,
-por lo que **no cumple** el requisito de un modelo original implementado solo con
-`numpy`/`scipy` (ver Capítulos 5 y 8). La novedad (R1) se declara solo para la combinación específica del modelo, no para el enfoque (Capítulo 4).
-```
-
 ## 0.2 Planteamiento del problema y relevancia
 
 La volatilidad es la magnitud de riesgo que alimenta la gestión de posiciones, el
