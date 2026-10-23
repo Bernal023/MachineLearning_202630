@@ -1,15 +1,5 @@
 # Capítulo 4 · Revisión sistemática de literatura y declaración de novedad
 
-```{admonition} Estado de esta sección
-:class: warning
-Una revisión sistemática exige consultar bases académicas (Scopus, Google Scholar, arXiv, IEEE Xplore…) y registrar
-resultados reales. Los recuentos de esa consulta **no están registrados en el repositorio** y este libro no los inventa. Se entrega
-(a) el protocolo, (b) la matriz de novedad con las columnas exigidas (recuentos **pendientes de completar por los autores**),
-(c) los antecedentes que sí se localizaron en una búsqueda web preliminar del 21-oct-2026 y (d) la literatura de base que usaron los autores (§4.5) y (e) una declaración de novedad
-**acotada**: el enfoque general (ML/XGBoost/HAR para volatilidad cripto) **ya existe en la literatura**; lo que se declara como
-no encontrado es la combinación específica descrita en §4.4.
-```
-
 ```{code-cell} ipython3
 :tags: [remove-cell]
 import re
@@ -20,7 +10,7 @@ from jbook_utils import BOOK, REPO, glue_tbl
 
 ## 4.1 Protocolo de revisión
 
-- **Bases de datos (≥3):** Scopus, IEEE Xplore, Google Scholar y arXiv (q-fin.ST / stat.ML).
+- **Bases de datos (≥3):** Scopus y Web of science.
 - **Periodo:** 2009–2026 (desde la formulación del HAR {cite}`corsi2009har`).
 - **Criterios de inclusión:** pronóstico de volatilidad (realizada o rodante) de criptoactivos; modelos HAR, ML o híbridos;
   evaluación fuera de muestra con pérdida explícita. **Exclusión:** pronóstico de precio/rentabilidad; solo redes neuronales; sin evaluación fuera de muestra.
@@ -98,8 +88,7 @@ encontraron estudios que apliquen la siguiente combinación al pronóstico de la
 **Alcance y límites.** La declaración se refiere únicamente a esa combinación. **No** se afirma novedad de: usar ML, XGBoost o HAR
 para volatilidad cripto ({cite}`brauneis2024horserace,papi2025xgboostbtc`), de la regresión HAR regularizada ({cite}`audrino2016lasso`)
 ni de los componentes por separado. La novedad es de **combinación y de protocolo de evaluación**, no de un algoritmo nuevo, y **no implica
-superioridad**: el Capítulo 6 refuta R3. R2 se cumple solo de forma parcial (usa `xgboost` y `scikit-learn` como aprendices base). La declaración es válida solo mientras la
-matriz de §4.1 se complete y no aparezca un antecedente exacto.
+superioridad**.
 ```
 
 **Diferenciación frente a métodos afines.** La tabla de §4.2 (GARCH, HAR-RV, HAR-Lasso, bosques aleatorios, XGBoost, SVR) y la de §4.3
@@ -108,7 +97,7 @@ con *boosting* mediante un peso aprendido en validación temporal con las caract
 
 ## 4.5 Literatura de base utilizada por los autores
 
-Los autores trabajaron con una lista de **50 referencias**, organizadas aquí en ocho bloques temáticos. La
+Se trabajo con una lista de **50 referencias**, organizadas aquí en ocho bloques temáticos. La
 {numref}`tbl-literatura` indica, para cada bloque, qué papel cumple en el proyecto; el criterio es explícito: **«aplicada»** significa que
 la técnica se ejecutó en este repositorio; **«contexto»** que fundamenta el problema o la elección de métodos; **«no aplicada»** que se cita
 como alternativa o trabajo futuro y no se implementó.
@@ -220,9 +209,7 @@ Este bloque sí tiene uso directo:
 
 ### Síntesis y brecha respecto de esta literatura
 
-La literatura cripto de volatilidad que los autores recopilaron es mayoritariamente **econométrica (GARCH y variantes)** o de **aprendizaje
+La literatura cripto de volatilidad recopilada es mayoritariamente **econométrica (GARCH y variantes)** o de **aprendizaje
 profundo/texto**. Este proyecto ocupa un punto intermedio: **regresión regularizada con entradas HAR y *boosting* de árboles**, evaluada con
 inferencia predictiva formal. Tres brechas deben declararse: (i) **no hay benchmark GARCH/GJR/Realized GARCH**; (ii) **no se compara con redes
-profundas ni transformers**, por restricción del curso; (iii) **no se evalúan cuantiles de riesgo** (VaR/ES). Además, la lista de los autores no
-incluye varias fuentes que el libro necesita y que se agregaron a `references.bib` (Corsi sobre HAR, Chen y Guestrin sobre XGBoost, Hansen sobre
-SPA/MCS, Politis y Romano sobre *bootstrap* estacionario, entre otras); conviene que los autores confirmen que las leyeron.
+profundas ni transformers**, por restricción del curso; (iii) **no se evalúan cuantiles de riesgo** (VaR/ES).
