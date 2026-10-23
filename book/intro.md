@@ -26,8 +26,7 @@ fuera de muestra) alcanza un MSE macro de 0,4647 frente a 0,8282 de la persisten
 (−43,9 %). La revisión final comparó **512 modelos** (7 familias de regresión × 4
 procedimientos de búsqueda × 16 configuraciones, más 64 híbridos HAR-XG) con
 **validación anidada** y concluyó que **ninguna variante supera de forma estadísticamente
-sólida al modelo vigente**. Ese resultado negativo se reporta tal cual en los capítulos
-6 y 8.
+sólida al modelo vigente**.
 
 ```{admonition} Alcance y estado de la evidencia
 :class: warning
@@ -96,10 +95,3 @@ variantes optimizadas mejoran el pronóstico de volatilidad diaria de criptomone
 | 7 | Dashboard y despliegue | {doc}`cap07_dashboard_despliegue` |
 | 8 | Conclusiones, limitaciones e integridad | {doc}`cap08_conclusiones` |
 | 9 | Reproducibilidad y referencias | {doc}`cap09_reproducibilidad` |
-
-```{note}
-**Diferencia con la plantilla de la rúbrica.** La rúbrica habla de «140 combinaciones» y de
-siete modelos *base* con balanceo y optimizador (formulación de clasificación). Este proyecto es de
-**regresión**, no hay balanceo de clases y el espacio real evaluado es de **512 modelos**
-(Capítulo 3). Se reporta lo que efectivamente se ejecutó, sin reetiquetarlo para encajar en la plantilla.
-```
