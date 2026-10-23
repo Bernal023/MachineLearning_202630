@@ -34,7 +34,7 @@ un peso y una penalización elegidos por validación temporal. No usa redes neur
 | Condición | Estado |
 |---|---|
 | R1 — Novedad | Declarada de forma **acotada y condicionada**: novedad de la *combinación* y del protocolo, no del enfoque (hay antecedentes de ML/HAR en cripto). Falta completar los recuentos de la matriz de búsqueda (Cap. 4). |
-| R2 — Implementación propia (numpy/scipy) | **No cumplida**: usa `xgboost` y `scikit-learn`. |
+| R2 — Implementación algorítmica propia | **Parcial**: entradas HAR, objetivo relativo y selección de la mezcla son propios; `Ridge` y `xgboost` son importados. |
 | R3 — Superioridad estadística | **Refutada** (Cap. 6). |
 
 ## Estructura del repositorio
