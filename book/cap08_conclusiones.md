@@ -50,22 +50,33 @@ un piloto acotado y no un ranking universal de optimizadores.
 
 | Condición | Veredicto | Justificación |
 |---|---|---|
-| **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto). |
-| **R2 — Implementación propia (numpy/scipy)** | **No cumplida** | El modelo usa `xgboost` y `scikit-learn`; no hay clase propia ni pruebas `pytest` (Cap. 5). |
-| **R3 — Superioridad estadística** | **Validada en desempeño empírico y MCS (90 %)** | Supera de forma amplia a la persistencia (−45,5 %) y al HAR-OLS; frente al modelo vigente, HAR-XG (grid) logra el menor MSE en 2025 (−2,8 %), integra el conjunto superior MCS 90 % y muestra evidencia marginal en SPA ($p = 0,106$), acotada por la potencia finita en DM–Holm (Cap. 6). |
+| **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto); condicionada a completar la matriz de búsqueda (Cap. 4). |
+| **R2 — Implementación algorítmica propia** | **Parcial** | Los autores programaron las entradas HAR, el objetivo relativo y la selección de la mezcla; los aprendices base (`Ridge`, `xgboost`) son importados y no hay clase propia con `pytest` (Cap. 5). |
+| **R3 — Superioridad estadística** | **Refutada** | Ninguna candidata supera al vigente: DM–Holm, SPA, MCS e IC no lo respaldan (Cap. 6). |
+
+```{admonition} Tope de calificación
+:class: important
+Con R2 solo parcial y R3 refutada (R1 solo declarada de forma acotada y condicionada), corresponde presumiblemente el **tope inferior** de la escala de la rúbrica (la
+rúbrica menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo
+ajusta: reporta los hechos para que la decisión sea verificable.
+```
 
 ## 8.3 Limitaciones
 
 - **Sin periodo confirmatorio:** 2025 y enero–agosto de 2026 fueron explorados repetidamente.
+- **Estacionariedad:** solo se documentó descriptivamente (Cap. 2); no se reportan pruebas ADF/KPSS.
+- **Matriz de búsqueda sin recuentos** (Cap. 4): la declaración de novedad queda condicionada a completarla y **capturas del dashboard pendientes** (Cap. 7).
 - **Modelos serializados:** los `.joblib` de los 512 pipelines no están versionados; solo sus hashes.
 - **Desviaciones de la rúbrica** (Cap. 6): intervalos por percentiles y no BCa; $d_z$ de Cohen y no $\delta$ de Cliff; Holm y no Benjamini–Hochberg.
 - **Rúbrica de clasificación vs. problema de regresión:** no aplican balanceo de clases ni DeLong/McNemar; las «140 combinaciones» son 512 modelos.
 
 ## 8.4 Trabajo futuro
 
-1. Ejecutar y registrar la revisión sistemática del Capítulo 4.
-2. Implementar un modelo propio en `numpy`/`scipy` con clase compatible con `scikit-learn` y sus pruebas, y compararlo bajo el mismo protocolo.
-3. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
+1. Evaluar sobre un periodo **realmente nuevo** con reglas fijadas antes de ver los datos.
+2. Ejecutar y registrar la revisión sistemática del Capítulo 4.
+3. Implementar un modelo propio en `numpy`/`scipy` con clase compatible con `scikit-learn` y sus pruebas, y compararlo bajo el mismo protocolo.
+4. Añadir pruebas de estacionariedad, intervalos BCa y $\delta$ de Cliff; ampliar presupuestos de búsqueda.
+5. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
 
 ## 8.5 Consideraciones éticas
 
@@ -78,4 +89,4 @@ pronóstico de volatilidad puede inducir sobreconfianza si se interpreta como ga
 Autores: **Jassan Alberto Arteta Chavarro** y **Mateo Bernal**. La estructura, la redacción de este libro y parte del código de
 análisis se elaboraron con asistencia de un modelo de lenguaje (**Claude, de Anthropic**), que no sustituye la responsabilidad
 de los autores. Los resultados numéricos provienen de los artefactos del repositorio y se verifican con celdas `assert` al
-compilar.
+compilar. *Los autores deben revisar, ajustar y confirmar esta declaración antes de entregarla.*
