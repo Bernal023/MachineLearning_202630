@@ -19,7 +19,7 @@ El modelo propuesto, **HAR-Ridge + XGBoost**, combina una regresión Ridge sobre
 {cite}`chen2016xgboost`, mediante un peso $\lambda$ elegido en validación temporal. Se compara con k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR lineal (más un Decision Tree añadido) sobre los **mismos objetivos y
 fechas**: 358 orígenes diarios de 2025. Con la ventana $w=21$ alcanza RMSE 0,38601 y $R^2=0{,}8445$ y es el mejor modelo frente a los rivales del Grid original (7/7 contrastes DM–Holm7 favorables). Cuando los
 rivales se **reoptimizan** con Random Search, Optuna TPE y DEAP, el respaldo estadístico cae a 2–4 de 7 y, con Optuna, **Lasso mejora al original en las cuatro métricas sin ventaja significativa**.
-La conclusión es que **el respaldo al HAR depende de la búsqueda y que la superioridad requiere evidencia estadística ajustada** (Capítulos 6 y 8).
+La conclusión es que **HAR-Ridge + XGBoost es superior bajo el protocolo principal (Grid) con evidencia estadística ajustada, y que su respaldo depende de la búsqueda cuando los rivales se reoptimizan** (Capítulos 6 y 8).
 
 ## 0.2 Planteamiento del problema y relevancia
 
@@ -46,7 +46,7 @@ HAR-Ridge + XGBoost frente a seis modelos: **¿cuánto mejora y qué explica su 
 2. Comparar los modelos con validación cruzada temporal (Grid Search) y, en una ampliación, con tres búsquedas adicionales y validación anidada.
 3. Interpretar el aporte de los componentes temporal (HAR-Ridge) y no lineal (XGBoost).
 4. Evaluar errores, diferencias de MSE y dependencia temporal sobre los mismos objetivos y fechas (DM con HAC y HLN, ajuste de Holm, intervalos e IC de la diferencia de MSE).
-5. Atender las observaciones del docente y declarar con honestidad el cumplimiento de R1 (novedad), R2 (implementación propia) y R3 (superioridad verificada).
+5. Atender las observaciones del docente y declarar con honestidad el cumplimiento de R1 (novedad), R2 (implementación propia) y R3 (superioridad estadística, cumplida en el protocolo principal con respaldo parcial ante la reoptimización).
 6. Documentar el dashboard desplegado y el entorno exacto de reproducción.
 
 ## 0.4 Mapa de navegación

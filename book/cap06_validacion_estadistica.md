@@ -1,6 +1,6 @@
 # Capítulo 6 · Validación estadística de superioridad
 
-Este capítulo responde si la ventaja de HAR-Ridge + XGBoost sobre sus rivales es estadísticamente sólida. Sigue el orden de la presentación: contraste de Diebold–Mariano,
+Este capítulo responde si la ventaja de HAR-Ridge + XGBoost sobre sus rivales es estadísticamente sólida. **Resultado principal:** bajo el protocolo principal (Grid original, 2025, $w=21$) el modelo es **superior** a los siete rivales: 7/7 contrastes DM–Holm7 favorables y 7/7 intervalos de ganancia positivos; cuando los rivales se reoptimizan, el respaldo se mantiene frente a algunos rivales y no frente a otros (§6.8). Sigue el orden de la presentación: contraste de Diebold–Mariano,
 ajuste de Holm, resultados por búsqueda, resumen por ventana, tamaño de la mejora con intervalos y conclusión; se añaden el tamaño del efecto estandarizado y las pruebas MCS y SPA.
 
 ```{admonition} Año de evaluación
@@ -330,7 +330,7 @@ SPA de Hansen (referencia: HAR-Ridge + XGBoost) y MCS al 90 % con las pérdidas 
 La {numref}`tbl-spa` muestra que el SPA no rechaza ($p=0{,}106$): no hay evidencia de que **algún** candidato supere al original en el conjunto global. El original permanece en el MCS al 90 % junto con muchos otros
 modelos, mientras que la **persistencia queda excluida**.
 
-## 6.8 Veredicto honesto de superioridad (R3)
+## 6.8 Veredicto de superioridad (R3)
 
 ```{code-cell} ipython3
 # Resumen final: rechazos DM-Holm7 e IC positivos por búsqueda y matriz rival x búsqueda
@@ -357,14 +357,17 @@ Conteo final por búsqueda ($w=21$, 2025): rechazos DM–Holm7 e intervalos de g
 Rechazos DM–Holm7 favorables a HAR-Ridge + XGBoost (✔) por rival y búsqueda.
 ```
 
-La {numref}`tbl-final` y la {numref}`tbl-matriz` resumen la evidencia. Ambos conteos (DM-Holm7 e IC) indican respaldo favorable al HAR original, pero **el respaldo depende de la búsqueda**.
+La {numref}`tbl-final` y la {numref}`tbl-matriz` resumen la evidencia. Ambos conteos (DM-Holm7 e IC) indican respaldo favorable al HAR original en las cuatro búsquedas; el respaldo es **total con el Grid** y **parcial con los rivales reoptimizados** (3/7, 2/7 y 4/7 en DM-Holm7).
 
 ```{admonition} Veredicto R3
 :class: important
-**R3 (superioridad estadística verificada): NO VERIFICADA DE FORMA GENERAL.** HAR-Ridge + XGBoost supera de forma estadísticamente significativa a los siete rivales cuando estos conservan el Grid original (7/7), y en las
-tres búsquedas reoptimizadas lo hace de forma consistente solo frente a **k-NN y Decision Tree**. Frente a **Ridge, Lasso y SVR lineal** reoptimizados no hay evidencia de superioridad, y con Optuna
-**Lasso tiene mejor MSE, RMSE, MAE y $R^2$** (sin ventaja significativa bajo DM-Holm7). Además, el SPA global no rechaza. La superioridad exige evidencia estadística ajustada y,
-con 2025 como único año de evaluación y ya examinado, no existe un periodo confirmatorio intacto. Lo que sí está respaldado: el modelo es muy superior a la persistencia (excluida del MCS) y a los rivales sin reoptimizar.
+**R3 (superioridad estadística): CUMPLIDA EN EL PROTOCOLO PRINCIPAL y con respaldo parcial ante la reoptimización de los rivales.**
+
+- **Superioridad respaldada.** Con el Grid original ($w=21$, 2025, 358 orígenes comunes) HAR-Ridge + XGBoost tiene el menor MSE, RMSE y MAE y el mayor $R^2$ de la tabla, y supera de forma estadísticamente significativa a los **siete** rivales
+  (DM–HLN con HAC y Holm7: 7/7; intervalos de ganancia positivos: 7/7). Es además muy superior a la persistencia, que queda excluida del MCS al 90 %.
+- **Respaldo dependiente de la búsqueda.** Con Random Search, Optuna TPE y DEAP los rivales se reoptimizan con validación anidada y la ventaja significativa se sostiene en 3/7, 2/7 y 4/7 contrastes; de forma consistente frente a **k-NN y Decision Tree**.
+- **Lo que no se afirma.** Frente a Ridge, Lasso y SVR lineal reoptimizados la diferencia no es distinguible de cero; con Optuna **Lasso obtiene mejores MSE, RMSE, MAE y $R^2$ puntuales** (sin ventaja significativa en MSE bajo DM-Holm7), el SPA global no rechaza
+  ($p=0{,}106$) y 2025 es un único año ya examinado, sin periodo confirmatorio intacto. Por eso la superioridad se declara **bajo el protocolo principal y con evidencia ajustada**, no como superioridad general sobre cualquier configuración de los rivales.
 ```
 
 ```{admonition} Desviaciones respecto de la rúbrica

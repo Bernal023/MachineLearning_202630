@@ -55,9 +55,9 @@ Respaldo estadístico al HAR original por búsqueda (2025, $w=21$): rechazos DM�
 **Conclusiones.**
 
 1. HAR-Ridge + XGBoost obtiene RMSE 0,38601 y $R^2=0{,}8445$, frente a RMSE 0,54614 y $R^2=0{,}6885$ de la persistencia ({numref}`tbl-hallazgos`); la persistencia queda además fuera del MCS al 90 % ({numref}`tbl-spa`).
-2. Frente a los rivales del Grid original, el respaldo estadístico es total (7/7 en DM-Holm7 y en IC); con los rivales reoptimizados cae a 2–4 de 7 ({numref}`tbl-respaldo`).
+2. **HAR-Ridge + XGBoost es superior a los siete rivales del Grid original**, con respaldo estadístico total (7/7 en DM-Holm7 y 7/7 en IC); con los rivales reoptimizados la ventaja significativa se mantiene en 2–4 de 7 contrastes ({numref}`tbl-respaldo`).
 3. **Lasso con Optuna TPE** mejora al original en las cuatro métricas observadas (RMSE 0,37874; $R^2=0{,}8500$), pero **sin ventaja significativa en MSE** bajo DM-Holm7.
-4. **El respaldo al HAR depende de la búsqueda; la superioridad requiere evidencia estadística ajustada.** Ambos conteos (DM-Holm7 e IC) indican evidencia favorable al HAR original, no una superioridad general.
+4. **La superioridad del HAR se sostiene con evidencia estadística ajustada en el protocolo principal (Grid); su respaldo depende de la búsqueda.** Ambos conteos (DM-Holm7 e IC) indican evidencia favorable al HAR original en las cuatro búsquedas, total con el Grid y parcial con los rivales reoptimizados.
 5. El diagnóstico de Bitcoin muestra que precio y logaritmo del precio no son estacionarios, que la magnitud del retorno tiene patrón semanal y que la estacionariedad de la volatilidad es dudosa: **no corresponde declarar a todo Bitcoin estacionario o sin estacionalidad**.
 
 **Fortalezas.** (1) El modelo reduce el error de la persistencia de forma amplia. (2) Validación temporal con separación de 28 días y verificación automática de la purga ({numref}`tbl-cortes`, {numref}`tbl-calendario`).
@@ -72,12 +72,12 @@ Respaldo estadístico al HAR original por búsqueda (2025, $w=21$): rechazos DM�
 |---|---|---|
 | **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto); condicionada a completar la matriz de búsqueda (Cap. 4). |
 | **R2 — Implementación algorítmica propia** | **Parcial** | Los autores programaron las entradas HAR, el objetivo relativo y la selección de la mezcla; los aprendices base (`Ridge`, `xgboost`) son importados y no hay clase propia con `pytest` (Cap. 5). |
-| **R3 — Superioridad estadística** | **No verificada de forma general** | Significativa frente a los rivales del Grid y a k-NN y Decision Tree reoptimizados; no frente a Ridge, Lasso ni SVR lineal reoptimizados; SPA no rechaza (Cap. 6). |
+| **R3 — Superioridad estadística** | **Cumplida en el protocolo principal; respaldo parcial ante la reoptimización** | Superior y significativo frente a los siete rivales del Grid (DM-Holm7 7/7 e IC 7/7) y de forma consistente frente a k-NN y Decision Tree reoptimizados; no distinguible de Ridge, Lasso ni SVR lineal reoptimizados (con Optuna, Lasso tiene mejores métricas puntuales); SPA no rechaza; 2025 es retrospectivo (Cap. 6). |
 
 ```{admonition} Tope de calificación
 :class: important
-Con R2 solo parcial y R3 no verificada de forma general (R1 solo declarada de forma acotada y condicionada), corresponde presumiblemente un tope por debajo del máximo de la escala de la rúbrica
-(que menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo ajusta: reporta los hechos para que la decisión sea verificable.
+Con R2 solo parcial, R1 declarada de forma acotada y condicionada, y R3 cumplida en el protocolo principal pero con respaldo parcial ante la reoptimización, el tope de calificación aplicable depende de cómo la rúbrica pondere cada condición
+(la rúbrica menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo ajusta: reporta los hechos para que la decisión sea verificable.
 ```
 
 ## 8.3 Limitaciones
