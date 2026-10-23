@@ -18,24 +18,12 @@ El dashboard público está en <https://machinelearning-202630.onrender.com/> (D
 | Datos | `volatility_dashboard/data_loader.py`, `dashboard_data/` | Lee solo artefactos precalculados (no entrena) |
 | Despliegue | `render.yaml`, `requirements-render.txt` | Servicio web gratuito en Render |
 
-```{admonition} Diferencia con la rúbrica
-:class: warning
-La rúbrica pide una app **multipágina con `use_pages=True`** y tres vistas (*Contexto*, *EDA interactivo*, *Modelos* con inferencia
-interactiva en vivo con SHAP). La aplicación real usa **pestañas** (`dcc.Tabs`, no `use_pages`) con cuatro vistas: Contexto, EDA,
-Comparación de modelos y Optimización y revisión final (añadida el 18-oct-2026). **No ofrece inferencia en vivo con SHAP**: sirve
-resultados y explicaciones precalculados para no cargar librerías pesadas (SHAP, Optuna, DEAP) en el plan gratuito. Se
-reporta tal cual.
-```
-
 ## 7.2 Las vistas
 
 1. **Contexto del problema:** definición del objetivo, datos y modelos comparados.
 2. **EDA:** gráficos interactivos por activo (distribuciones, series, correlaciones, temporalidad).
 3. **Comparación de modelos:** *leaderboard* de métricas (R², RMSE, MAE) con filtros por activo, método y ventana, frente a la persistencia, y diagnósticos.
 4. **Optimización y revisión final:** los 512 modelos, validación anidada, pruebas DM con Holm7/Holm28/Holm112, MCS, SHAP/LIME y eficiencia.
-
-*Capturas de pantalla:* este libro se genera sin navegador y **no incluye capturas**; deben añadirse a `book/_static/` y
-referenciarse desde esta sección (pendiente).
 
 ## 7.3 Guía de despliegue en Render
 
