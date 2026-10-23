@@ -1,7 +1,5 @@
 # Capítulo 2 · Datos: ETL y EDA
 
-Este capítulo sigue el orden de la presentación del proyecto: fuente y cobertura, ETL, exploración de Bitcoin (precios, retornos y
-diagnóstico temporal), distribución de retornos y del objetivo, correlaciones, dependencia temporal y decisiones metodológicas.
 
 ```{code-cell} ipython3
 :tags: [remove-cell]
