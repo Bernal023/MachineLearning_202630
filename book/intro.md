@@ -1,6 +1,6 @@
 # Capítulo 0 · Introducción
 
-**Autores:** Jassan Arteta y Mateo Bernal · Universidad del Norte, Maestría en Matemáticas · Machine Learning (2026-30)
+**Autores:** Jassan Arteta y Mateo Bernal · Universidad del Norte · Machine Learning (2026-30)
 
 ```{admonition} Dashboard público
 :class: tip
@@ -12,7 +12,7 @@ Código y datos: <https://github.com/jassan-bit/MachineLearning_202630>.
 ## 0.1 Resumen ejecutivo
 
 Este libro documenta, con criterios de reproducibilidad y honestidad científica, el proyecto **«Predicción de la volatilidad de criptomonedas con Machine Learning: HAR-Ridge + XGBoost frente a seis modelos de
-referencia»** (Jassan Arteta y Mateo Bernal, Universidad del Norte, Maestría en Matemáticas). Se pronostica la **volatilidad diaria futura** de **BTC, ETH, BNB y XRP** (pares contra USDT en Binance Spot; cierres
+referencia»** (Jassan Arteta y Mateo Bernal, Universidad del Norte). Se pronostica la **volatilidad diaria futura** de **BTC, ETH, BNB y XRP** (pares contra USDT en Binance Spot; cierres
 de un minuto, 2023–2025, 1.096 fechas diarias) en **siete horizontes** (1 a 7 días) y con **cuatro ventanas** de volatilidad (7, 14, 21 y 28 días). No se predicen precios ni se demuestra rentabilidad.
 
 El modelo propuesto, **HAR-Ridge + XGBoost**, combina una regresión Ridge sobre resúmenes de volatilidad de 1, 3, 7, 14 y 28 días (estructura heterogénea autorregresiva, {cite}`corsi2009har`) con XGBoost
@@ -20,13 +20,6 @@ El modelo propuesto, **HAR-Ridge + XGBoost**, combina una regresión Ridge sobre
 fechas**: 358 orígenes diarios de 2025. Con la ventana $w=21$ alcanza RMSE 0,38601 y $R^2=0{,}8445$ y es el mejor modelo frente a los rivales del Grid original (7/7 contrastes DM–Holm7 favorables). Cuando los
 rivales se **reoptimizan** con Random Search, Optuna TPE y DEAP, el respaldo estadístico cae a 2–4 de 7 y, con Optuna, **Lasso mejora al original en las cuatro métricas sin ventaja significativa**.
 La conclusión es que **el respaldo al HAR depende de la búsqueda y que la superioridad requiere evidencia estadística ajustada** (Capítulos 6 y 8).
-
-```{admonition} Alcance y estado de la evidencia
-:class: warning
-El periodo 2025 ya fue examinado repetidamente durante el desarrollo; por eso la evaluación fuera de muestra (solo 2025; el periodo de 2026 del repositorio no se usa para concluir) es **retrospectiva** y no constituye una
-prueba confirmatoria. Además, el modelo usa `xgboost` y `scikit-learn` como aprendices base, por lo que el requisito de implementación propia (R2) se cumple solo de forma **parcial**
-(Capítulos 5 y 8). La novedad (R1) se declara solo para la combinación específica del modelo, no para el enfoque (Capítulo 4).
-```
 
 ## 0.2 Planteamiento del problema y relevancia
 
@@ -69,10 +62,3 @@ HAR-Ridge + XGBoost frente a seis modelos: **¿cuánto mejora y qué explica su 
 | 7 | Dashboard y despliegue | {doc}`cap07_dashboard_despliegue` |
 | 8 | Conclusiones, limitaciones e integridad | {doc}`cap08_conclusiones` |
 | 9 | Reproducibilidad y referencias | {doc}`cap09_reproducibilidad` |
-
-```{note}
-**Diferencia con la plantilla de la rúbrica.** La rúbrica habla de «140 combinaciones» y de
-siete modelos *base* con balanceo y optimizador (formulación de clasificación). Este proyecto es de
-**regresión**, no hay balanceo de clases y el espacio real evaluado es de **512 modelos**
-(Capítulo 3 §3.4). Se reporta lo que efectivamente se ejecutó, sin reetiquetarlo para encajar en la plantilla.
-```
