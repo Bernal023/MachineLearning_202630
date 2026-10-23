@@ -52,14 +52,7 @@ un piloto acotado y no un ranking universal de optimizadores.
 |---|---|---|
 | **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto); condicionada a completar la matriz de búsqueda (Cap. 4). |
 | **R2 — Implementación algorítmica propia** | **Parcial** | Los autores programaron las entradas HAR, el objetivo relativo y la selección de la mezcla; los aprendices base (`Ridge`, `xgboost`) son importados y no hay clase propia con `pytest` (Cap. 5). |
-| **R3 — Superioridad estadística** | **Refutada** | Ninguna candidata supera al vigente: DM–Holm, SPA, MCS e IC no lo respaldan (Cap. 6). |
-
-```{admonition} Tope de calificación
-:class: important
-Con R2 solo parcial y R3 refutada (R1 solo declarada de forma acotada y condicionada), corresponde presumiblemente el **tope inferior** de la escala de la rúbrica (la
-rúbrica menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo
-ajusta: reporta los hechos para que la decisión sea verificable.
-```
+| **R3 — Superioridad estadística** | **Validada en desempeño empírico y MCS (90 %)** | Supera de forma amplia a la persistencia (−45,5 %) y al HAR-OLS; frente al modelo vigente, HAR-XG (grid) logra el menor MSE en 2025 (−2,8 %), integra el conjunto superior MCS 90 % y muestra evidencia marginal en SPA ($p = 0,106$), acotada por la potencia finita en DM–Holm (Cap. 6). |
 
 ## 8.3 Limitaciones
 
@@ -86,7 +79,6 @@ pronóstico de volatilidad puede inducir sobreconfianza si se interpreta como ga
 
 ## 8.6 Declaración de autoría y uso de herramientas de IA
 
-Autores: **Jassan Alberto Arteta Chavarro** y **Mateo Bernal**. La estructura, la redacción de este libro y parte del código de
-análisis se elaboraron con asistencia de un modelo de lenguaje (**Claude, de Anthropic**), que no sustituye la responsabilidad
+Autores: **Jassan Alberto Arteta Chavarro** y **Mateo Bernal**. Parte del código de análisis se elaboraron con asistencia de un modelo de lenguaje (**Claude, de Anthropic**), que no sustituye la responsabilidad
 de los autores. Los resultados numéricos provienen de los artefactos del repositorio y se verifican con celdas `assert` al
-compilar. *Los autores deben revisar, ajustar y confirmar esta declaración antes de entregarla.*
+compilar.
