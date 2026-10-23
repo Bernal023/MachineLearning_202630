@@ -282,5 +282,4 @@ pruebas sin fallos ({doc}`cap01_trazabilidad`). **No existen** pruebas de aprend
 semillas, de entradas inválidas ni de `sklearn.base.clone` para una clase propia, porque esa clase no existe.
 
 Para cerrar R2 se requeriría: (i) una clase `BaseEstimator`/`RegressorMixin` en `numpy`/`scipy` (por ejemplo,
-Ridge en forma cerrada + *boosting* propio), (ii) su comparación pareada bajo las mismas particiones, y (iii) la revisión de
-novedad del Capítulo 4. Eso no existe hoy en el repositorio; por eso R2 se declara solo como **parcial**.
+Ridge en forma cerrada + *boosting* propio), (ii) su comparación pareada bajo las mismas particiones.
