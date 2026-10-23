@@ -53,7 +53,7 @@ Matriz de novedad (muestra de 8 de 20 filas; 4 bases × 5 cadenas). Los recuento
 | XGBoost | {cite}`chen2016xgboost` | *Boosting* de árboles | Es el componente no lineal. |
 | SVR | {cite}`drucker1997svr` | Regresión por vectores soporte | Benchmark del estudio. |
 
-## 4.3 Antecedentes localizados (búsqueda web preliminar, 21-oct-2026)
+## 4.3 Antecedentes localizados
 
 Dos búsquedas web generales (no sistemáticas; no sustituyen la matriz de §4.1) mostraron que **no es nuevo** usar ML, XGBoost o HAR para
 la volatilidad de criptomonedas:
@@ -64,9 +64,6 @@ la volatilidad de criptomonedas:
 | {cite}`papi2025xgboostbtc` | Compara XGBoost con HAR para la varianza realizada de BTC/USDT en Binance. | Mismo activo y fuente de datos; compara los modelos, no los mezcla. |
 | {cite}`xgblstm2026` | Apilamiento híbrido XGBoost + LSTM para volatilidad de Bitcoin. | Híbrido con redes neuronales (excluidas aquí). |
 | {cite}`garchxgb` | Híbrido GARCH + XGBoost para el índice JSE Top40. | Híbrido estadístico + XGBoost, pero con GARCH y en otro mercado. |
-
-En ninguno de los resultados vistos aparece la mezcla **Ridge sobre entradas HAR + XGBoost con un peso elegido por validación
-temporal**, pero dos búsquedas generales no bastan para afirmarlo: debe confirmarse con la matriz completa de §4.1.
 
 ## 4.4 Declaración formal de novedad (R1)
 
