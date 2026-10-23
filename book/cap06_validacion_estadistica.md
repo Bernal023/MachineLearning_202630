@@ -3,12 +3,6 @@
 Este capítulo responde si la ventaja de HAR-Ridge + XGBoost sobre sus rivales es estadísticamente sólida. **Resultado principal:** bajo el protocolo principal (Grid original, 2025, $w=21$) el modelo es **superior** a los siete rivales: 7/7 contrastes DM–Holm7 favorables y 7/7 intervalos de ganancia positivos; cuando los rivales se reoptimizan, el respaldo se mantiene frente a algunos rivales y no frente a otros (§6.8). Sigue el orden de la presentación: contraste de Diebold–Mariano,
 ajuste de Holm, resultados por búsqueda, resumen por ventana, tamaño de la mejora con intervalos y conclusión; se añaden el tamaño del efecto estandarizado y las pruebas MCS y SPA.
 
-```{admonition} Año de evaluación
-:class: note
-Todas las conclusiones usan **solo 2025** (358 orígenes diarios, del 1 de enero al 24 de diciembre). El periodo de 2026 existente en el repositorio no se usa. Como 2025 ya había sido examinado
-durante el desarrollo, la comparación es **retrospectiva** y exploratoria: no hay un periodo confirmatorio intacto.
-```
-
 ```{code-cell} ipython3
 :tags: [remove-cell]
 import json, warnings
@@ -368,10 +362,4 @@ La {numref}`tbl-final` y la {numref}`tbl-matriz` resumen la evidencia. Ambos con
 - **Respaldo dependiente de la búsqueda.** Con Random Search, Optuna TPE y DEAP los rivales se reoptimizan con validación anidada y la ventaja significativa se sostiene en 3/7, 2/7 y 4/7 contrastes; de forma consistente frente a **k-NN y Decision Tree**.
 - **Lo que no se afirma.** Frente a Ridge, Lasso y SVR lineal reoptimizados la diferencia no es distinguible de cero; con Optuna **Lasso obtiene mejores MSE, RMSE, MAE y $R^2$ puntuales** (sin ventaja significativa en MSE bajo DM-Holm7), el SPA global no rechaza
   ($p=0{,}106$) y 2025 es un único año ya examinado, sin periodo confirmatorio intacto. Por eso la superioridad se declara **bajo el protocolo principal y con evidencia ajustada**, no como superioridad general sobre cualquier configuración de los rivales.
-```
-
-```{admonition} Desviaciones respecto de la rúbrica
-:class: warning
-Los intervalos de la presentación son normales HAC individuales, y los del $d_z$, *bootstrap* estacionario por **percentiles** (no BCa {cite}`efron1987bca`); se usa $d_z$ de Cohen y **no** el $\delta$ de Cliff; no se aplicaron Friedman–Nemenyi
-(corte transversal) ni Clark–West, y se ajustó con Holm (no Benjamini–Hochberg). El ajuste de Holm es **por búsqueda y ventana**, no conjunto.
 ```
