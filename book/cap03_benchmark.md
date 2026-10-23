@@ -1,5 +1,8 @@
 # Capítulo 3 · Modelos benchmark y mejores combinaciones
 
+Este capítulo compara **HAR-Ridge + XGBoost** con los modelos de referencia, primero con el diseño original (Grid Search, validación cruzada temporal) y
+después con la ampliación que reoptimiza a los rivales con otras tres búsquedas y validación anidada.
+
 ```{code-cell} ipython3
 :tags: [remove-cell]
 import json, tempfile, warnings
@@ -11,12 +14,189 @@ import matplotlib.pyplot as plt
 import joblib
 from scipy import stats
 from IPython.display import display
-from jbook_utils import R, REPO, SEED, read_csv, glue_fig, glue_tbl
+from jbook_utils import (R, REPO, SEED, HAR, FAMILIES, SEARCHES, read_csv, glue_fig, glue_tbl)
 plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": .3,
                      "axes.spines.top": False, "axes.spines.right": False})
 ```
 
-## 3.1 Espacio de modelos evaluado
+## 3.1 HAR-Ridge + XGBoost frente a seis modelos de referencia
+
+La pregunta es cuánto mejora HAR-Ridge + XGBoost frente a cada modelo, **con los mismos objetivos y fechas**.
+
+| Modelo comparado | Cómo representa la información histórica |
+|---|---|
+| k-NN | Promedia ejemplos históricos próximos en las características. |
+| Ridge | Regresión lineal con penalización L2 {cite}`hoerl1970ridge`. |
+| Lasso | Regresión lineal con penalización L1; puede anular coeficientes {cite}`tibshirani1996lasso`. |
+| Random Forest | Promedia árboles para representar relaciones no lineales {cite}`breiman2001random`. |
+| XGBoost | Añade árboles sucesivos para corregir errores del conjunto {cite}`chen2016xgboost`. |
+| SVR Lineal | Usa un margen $\epsilon$ y regularización {cite}`drucker1997svr`. |
+| **HAR-Ridge + XGBoost** | Reúne estructura temporal regularizada y relaciones no lineales. |
+
+En la ampliación se añade un **Decision Tree** (marcado con asterisco en las tablas del Grid) y se reoptimizan los rivales con tres búsquedas adicionales:
+Random Search {cite}`bergstra2012random`, bayesiana con Optuna TPE {cite}`akiba2019optuna` y genética con DEAP {cite}`fortin2012deap`.
+Los modelos guardados no se reentrenan al cambiar los filtros del dashboard.
+
+## 3.2 Validación cruzada temporal del Grid Search
+
+El Grid Search usa **seis cortes con entrenamiento creciente** (*expanding window*) y validación bimestral en 2024; la configuración elegida se fija y se evalúa en
+2025, que no interviene en la selección. La selección es por RMSE de validación y el escalado, cuando corresponde, se ajusta solo con el entrenamiento.
+Las seis familias originales y HAR-Ridge + XGBoost usan los mismos seis cortes.
+
+```{code-cell} ipython3
+# Calendario de los seis cortes (results/improved_classical_2023_2025/calendar.csv)
+cal = read_csv(REPO / "results" / "improved_classical_2023_2025" / "calendar.csv", parse_dates=["origin", "target_end"])
+filas = []
+for f, g in cal.groupby("fold"):
+    tr, va = g[g.split == "train"], g[g.split == "validation"]
+    filas.append({"corte": f, "entrenamiento": len(tr), "validación": len(va),
+                  "último_origen_train": tr.origin.max().date(), "primer_origen_val": va.origin.min().date(),
+                  "separación_días": (va.origin.min() - tr.origin.max()).days,
+                  "etiqueta_train_termina_antes_días": (va.origin.min() - tr.target_end.max()).days})
+cortes = pd.DataFrame(filas).set_index("corte")
+assert cortes["entrenamiento"].tolist() == [274, 334, 395, 456, 518, 579] and cortes["validación"].tolist() == [60, 61, 61, 62, 61, 54]
+assert cortes["validación"].sum() == 359 and (cortes["separación_días"] == 28).all() and (cortes["etiqueta_train_termina_antes_días"] == 21).all()
+assert 660 in read_csv(R / "selected_inputs.csv")["n_train"].unique() and len(read_csv(R / "window_review_original_vs_optimized_2025" / "daily_losses.csv").query("volatility_window == 21")) == 358
+
+fig, ax = plt.subplots(figsize=(10, 3.2))
+for f, g in cal.groupby("fold"):
+    tr, va = g[g.split == "train"], g[g.split == "validation"]
+    ax.barh(f, (tr.origin.max() - tr.origin.min()).days, left=tr.origin.min().toordinal(), color="#8fb4d9", height=.6)
+    ax.barh(f, (va.origin.max() - va.origin.min()).days, left=va.origin.min().toordinal(), color="#1f4e79", height=.6)
+ticks = [pd.Timestamp(d).toordinal() for d in ["2023-02-01", "2023-07-01", "2024-01-01", "2024-07-01", "2024-12-01"]]
+ax.set_xticks(ticks); ax.set_xticklabels(["feb. 2023", "jul. 2023", "ene. 2024", "jul. 2024", "dic. 2024"])
+ax.set_yticks(range(1, 7)); ax.invert_yaxis(); ax.set_ylabel("Corte"); ax.set_xlabel("Fecha del origen")
+ax.set_title("Cortes de validación cruzada temporal (claro: entrenamiento; oscuro: validación)")
+fig.tight_layout(); glue_fig("fig-cortes", fig)
+glue_tbl("tbl-cortes", cortes)
+cortes
+```
+
+```{glue:figure} tbl-cortes
+:name: tbl-cortes
+:figwidth: 100%
+
+Cortes de la validación cruzada temporal: orígenes de entrenamiento y validación, y separación entre ambos (días).
+```
+
+```{glue:figure} fig-cortes
+:name: fig-cortes
+:figwidth: 90%
+
+Orígenes de entrenamiento (claro) y validación (oscuro) de cada corte; eje x: fecha del origen.
+```
+
+**Interpretación de la {numref}`tbl-cortes` y la {numref}`fig-cortes`.** Los seis cortes tienen entre 274 y 579 orígenes de entrenamiento y entre 54 y 62 de
+validación (359 en total). Entre el último origen de entrenamiento y el primero de validación hay **28 días**, y la última etiqueta de entrenamiento termina **21 días antes**
+de la validación, de modo que ninguna etiqueta de entrenamiento se solapa con la validación (control contra la fuga de información). Después de elegir la
+configuración, el modelo se **reajusta con 660 orígenes** y se evalúa en **358 orígenes de 2025**.
+
+## 3.3 Resultados de 2025 con la ventana de 21 días
+
+La ventana $w=21$ es la **elección histórica** de la presentación (mayor $R^2$ entre las ventanas con mayoría favorable bajo DM-Holm). Se comparan cuatro activos y siete horizontes
+con 358 orígenes comunes, del 1 de enero al 24 de diciembre de 2025. RMSE y MAE están en puntos porcentuales de volatilidad; el MSE, en puntos porcentuales al cuadrado; el $R^2$, sin
+unidades. Son promedios por activo y horizonte, por lo que **el RMSE medio es distinto de la raíz del MSE medio**.
+
+```{code-cell} ipython3
+# Métricas 2025, w = 21, por procedimiento de búsqueda
+macro = read_csv(R / "evaluation" / "macro_by_window.csv")
+macro = macro[(macro.year == 2025) & (macro.volatility_window == 21)].set_index("model")
+orig = read_csv(REPO / "results" / "professor_feedback_20261018" / "metrics_by_window.csv")
+orig = orig[(orig.year == 2025) & (orig.volatility_window.astype(str) == "21")].set_index("model")
+
+def tabla_busqueda(search):
+    filas = {HAR: orig.loc[HAR, ["mse", "rmse", "mae", "r2"]]}
+    for f, n in FAMILIES.items():
+        if search == "grid":
+            r = macro.loc["DecisionTree [grid]"] if f == "DecisionTree" else orig.loc[n]
+            n = n + ("*" if f == "DecisionTree" else "")
+        else:
+            r = macro.loc[f"{f} [{search}]"]
+        filas[n] = r[["mse", "rmse", "mae", "r2"]]
+    t = pd.DataFrame(filas).T.astype(float)
+    return pd.concat([t.loc[[HAR]], t.drop(HAR).sort_values("mse")]).round(5)
+
+tablas = {s: tabla_busqueda(s) for s in SEARCHES}
+def victorias(t):   # el original frente a los 7 rivales: R² mayor, RMSE menor, MAE menor
+    h, r = t.loc[HAR], t.drop(HAR)
+    return (int((h.r2 > r.r2).sum()), int((h.rmse < r.rmse).sum()), int((h.mae < r.mae).sum()))
+resumen = pd.DataFrame({SEARCHES[s]: dict(zip(["R2 mayor", "RMSE menor", "MAE menor"], victorias(t))) for s, t in tablas.items()}).T
+assert resumen.loc["Grid Search*"].tolist() == [7, 7, 7] and resumen.loc["Random Search"].tolist() == [7, 7, 6]
+assert resumen.loc["Genética (DEAP)"].tolist() == [7, 6, 5]
+assert abs(tablas["grid"].loc[HAR, "mse"] - .18444) < 1e-5 and abs(tablas["bayesian"].loc["Lasso", "r2"] - .85) < 1e-4
+for s, t in tablas.items():
+    glue_tbl(f"tbl-w21-{s}", t)
+glue_tbl("tbl-w21-resumen", resumen)
+tablas["grid"]
+```
+
+```{glue:figure} tbl-w21-grid
+:name: tbl-w21-grid
+:figwidth: 90%
+
+Grid Search, 2025, $w=21$: MSE, RMSE, MAE y $R^2$. *Decision Tree añadido (ocho candidatos y validación temporal anidada).
+```
+
+```{code-cell} ipython3
+tablas["random"]
+```
+
+```{glue:figure} tbl-w21-random
+:name: tbl-w21-random
+:figwidth: 90%
+
+Random Search, 2025, $w=21$: métricas de HAR-Ridge + XGBoost y de los siete rivales reoptimizados.
+```
+
+```{code-cell} ipython3
+tablas["bayesian"]
+```
+
+```{glue:figure} tbl-w21-bayesian
+:name: tbl-w21-bayesian
+:figwidth: 90%
+
+Bayesiana (Optuna TPE), 2025, $w=21$: métricas de HAR-Ridge + XGBoost y de los siete rivales reoptimizados.
+```
+
+```{code-cell} ipython3
+tablas["genetic"]
+```
+
+```{glue:figure} tbl-w21-genetic
+:name: tbl-w21-genetic
+:figwidth: 90%
+
+Genética (DEAP), 2025, $w=21$: métricas de HAR-Ridge + XGBoost y de los siete rivales reoptimizados.
+```
+
+```{code-cell} ipython3
+resumen
+```
+
+```{glue:figure} tbl-w21-resumen
+:name: tbl-w21-resumen
+:figwidth: 80%
+
+Número de rivales (de 7) frente a los que HAR-Ridge + XGBoost tiene mayor $R^2$, menor RMSE y menor MAE, por búsqueda.
+```
+
+**Interpretación de las {numref}`tbl-w21-grid`–{numref}`tbl-w21-resumen`.**
+
+- **Grid Search:** HAR-Ridge + XGBoost tiene el menor error y el mayor $R^2$ de la tabla (MSE 0,18444; RMSE 0,38601; MAE 0,25372; $R^2$ 0,8445), mejor que los siete rivales en las tres métricas.
+  Para comparar, la persistencia en $w=21$ tiene MSE 0,37183 ($R^2$ 0,6885).
+- **Random Search:** el modelo original sigue teniendo el mayor $R^2$ frente a 7/7 rivales y el menor RMSE frente a 7/7, pero el menor MAE solo frente a 6/7: **SVR lineal
+  tiene un MAE ligeramente menor** (0,25002 frente a 0,25372).
+- **Bayesiana (Optuna TPE):** **Lasso supera al original en las cuatro métricas observadas** (MSE 0,17825; RMSE 0,37874; MAE 0,23904; $R^2$ 0,8500). Que sea mejor en el promedio no
+  implica ventaja estadística: eso se evalúa en el Capítulo 6.
+- **Genética (DEAP):** el original mantiene el mayor $R^2$ frente a 7/7, el menor RMSE frente a 6/7 y el menor MAE frente a 5/7 (Lasso tiene menor RMSE; Lasso y SVR lineal tienen menor MAE).
+
+Es decir, el **tamaño de la ventaja del original depende de cómo se optimizó al rival**: con el Grid original es amplia, y con rivales reoptimizados se estrecha o desaparece frente a Lasso.
+
+## 3.4 Ampliación: espacio de modelos evaluado
+
+La plantilla de la rúbrica menciona «140 combinaciones». En este proyecto, de regresión, el espacio
+real es el siguiente y es el que se reporta:
 
 - **7 familias de regresión base:** k-NN, Ridge {cite}`hoerl1970ridge`, Lasso {cite}`tibshirani1996lasso`,
   árbol de decisión, *random forest* {cite}`breiman2001random`, XGBoost {cite}`chen2016xgboost` y SVR
@@ -54,7 +234,7 @@ La {numref}`tbl-espacio` fija las cantidades: **448 modelos benchmark y 64 híbr
 finales**. Se evaluaron además 28 procedimientos «familia × optimizador» como unidades de comparación
 (7 × 4), más los 4 de HAR-XG.
 
-## 3.2 Protocolo de validación anidada con purga
+## 3.5 Protocolo de validación anidada con purga
 
 Para cada una de las seis particiones cronológicas externas de 2024 se **repite toda la optimización
 de hiperparámetros dentro del entrenamiento de ese pliegue**; el pliegue externo solo se usa para
@@ -103,7 +283,7 @@ orígenes de entrenamiento mínimos van de 130 a 282) y que **las 1.920 particio
 purga estricta** (`strict_purge` verdadero en todas). Este es el control directo contra la fuga de datos
 que reclamaba la corrección del docente (Capítulo 1).
 
-## 3.3 Desempeño en validación anidada: media ± desviación del bucle externo
+## 3.6 Desempeño en validación anidada: media ± desviación del bucle externo
 
 ```{code-cell} ipython3
 # Media ± desviación (ddof=1) del bucle externo: promedio por pliegue sobre las 16 configuraciones
@@ -155,10 +335,10 @@ externos. En el extremo opuesto, el árbol de decisión es claramente el peor (R
 que sí supera ampliamente la dispersión. Conclusión operativa: el benchmark discrimina **grupos** de modelos
 (lineales/SVR/HAR-XG vs. árboles individuales), no posiciones individuales.
 
-## 3.4 Criterio de selección de la mejor combinación por familia
+## 3.7 Criterio de selección de la mejor combinación por familia
 
 El criterio fijado de antemano en el protocolo es el **MSE externo medio de 2024** (media sobre los
-seis pliegues y las 16 configuraciones), sin usar 2025 ni 2026. Dentro de cada familia se elige el
+seis pliegues y las 16 configuraciones), sin usar 2025. Dentro de cada familia se elige el
 optimizador con menor MSE externo; se informa además cuántas desviaciones separan al ganador del segundo.
 
 ```{code-cell} ipython3
@@ -193,55 +373,50 @@ costo computacional mayor. Nótese además que el ranking por *MSE medio* (HAR-X
 medio* (Lasso genético primero, {numref}`tbl-top-externo`) no coinciden, porque el promedio de raíces no es
 la raíz del promedio: el criterio predeclarado es el MSE.
 
-## 3.5 Estabilidad del ranking entre periodos (honestidad sobre cambios)
+## 3.8 Estabilidad del ranking entre validación y evaluación (honestidad sobre cambios)
 
 ```{code-cell} ipython3
-# ¿Se conserva el ranking al pasar de validación 2024 a 2025 y 2026? (32 procedimientos)
+# ¿Se conserva el ranking al pasar de la validación anidada de 2024 a la evaluación de 2025? (32 procedimientos)
 mm = read_csv(R / "evaluation" / "macro_metrics.csv")
 mse24 = read_csv(R / "outer_fold_mean_sd.csv").set_index("model")["mse_mean"]
 mse25 = mm[mm.year == 2025].set_index("model")["mse"]
-mse26 = mm[mm.year == 2026].set_index("model")["mse"]
-comun = [m for m in mse24.index if m in mse25.index and m in mse26.index]
-rk = pd.DataFrame({"rank_2024_anidado": mse24[comun].rank(), "rank_2025": mse25[comun].rank(),
-                   "rank_2026": mse26[comun].rank()})
-rho = {"2024 vs 2025": stats.spearmanr(rk.rank_2024_anidado, rk.rank_2025),
-       "2024 vs 2026": stats.spearmanr(rk.rank_2024_anidado, rk.rank_2026),
-       "2025 vs 2026": stats.spearmanr(rk.rank_2025, rk.rank_2026)}
-rho_df = pd.DataFrame({k: {"rho_Spearman": v.statistic, "p": v.pvalue} for k, v in rho.items()}).T.round(3)
-lider = pd.Series({"2024 (anidado)": rk.rank_2024_anidado.idxmin(), "2025": rk.rank_2025.idxmin(),
-                   "2026": rk.rank_2026.idxmin()}, name="procedimiento líder por MSE")
-assert len(comun) == 32
-assert abs(rho["2024 vs 2025"].statistic - .922) < .002 and abs(rho["2025 vs 2026"].statistic - .745) < .002
-glue_tbl("tbl-rho", rho_df); glue_tbl("tbl-lider", lider.to_frame())
-display(rho_df); lider.to_frame()
+comun = [m for m in mse24.index if m in mse25.index]
+rk = pd.DataFrame({"rank_2024_anidado": mse24[comun].rank(), "rank_2025": mse25[comun].rank()})
+rho = stats.spearmanr(rk.rank_2024_anidado, rk.rank_2025)
+rho_df = pd.DataFrame({"2024 anidado vs 2025": {"rho_Spearman": rho.statistic, "p": rho.pvalue}}).T.round(4)
+lider = pd.Series({"2024 (anidado)": rk.rank_2024_anidado.idxmin(), "2025": rk.rank_2025.idxmin()},
+                  name="procedimiento líder por MSE")
+top5 = pd.DataFrame({"2024 anidado": rk.rank_2024_anidado.nsmallest(5).index,
+                     "2025": rk.rank_2025.nsmallest(5).index})
+assert len(comun) == 32 and abs(rho.statistic - .922) < .002
+glue_tbl("tbl-rho", rho_df); glue_tbl("tbl-lider", top5)
+display(rho_df); top5
 ```
 
 ```{glue:figure} tbl-rho
 :name: tbl-rho
 :figwidth: 70%
 
-Correlación de rangos de Spearman del MSE de los 32 procedimientos entre periodos.
+Correlación de rangos de Spearman del MSE de los 32 procedimientos entre la validación anidada 2024 y la evaluación 2025.
 ```
 
 ```{glue:figure} tbl-lider
 :name: tbl-lider
 :figwidth: 80%
 
-Procedimiento líder por MSE en cada periodo de evaluación.
+Cinco mejores procedimientos por MSE en la validación anidada de 2024 y en 2025.
 ```
 
-**Interpretación de las {numref}`tbl-rho` y {numref}`tbl-lider`.** El ordenamiento global es
-estable (ρ = 0,92 entre la validación anidada de 2024 y 2025; 0,79 con 2026; 0,75 entre 2025 y 2026), pero **el líder cambia
-en cada periodo**: HAR-XG bayesiano en 2024, HAR-XG con *grid* en 2025 y Lasso genético en 2026. Es decir, hay un
-grupo de cabeza estable y un puesto 1 inestable. Se reporta así, sin reescribir el ranking a posteriori: el
-cambio de líder es evidencia de que las diferencias entre los mejores no son robustas, lo que se confirma
-con las pruebas del Capítulo 6.
+**Interpretación de las {numref}`tbl-rho` y {numref}`tbl-lider`.** El ordenamiento global es muy estable (ρ de Spearman = 0,92 entre la validación
+anidada de 2024 y 2025), pero **el líder cambia**: HAR-XG con búsqueda bayesiana encabeza 2024 y HAR-XG con *grid* encabeza 2025 (ambos de la misma
+familia híbrida). Hay un grupo de cabeza estable y un puesto 1 inestable entre optimizadores. Se reporta así, sin reescribir el ranking a posteriori:
+el cambio de líder es evidencia de que las diferencias entre los mejores no son robustas, lo que se confirma con las pruebas del Capítulo 6.
 
-## 3.6 Reentrenamiento, serialización y prueba de ida y vuelta
+## 3.9 Reentrenamiento, serialización y prueba de ida y vuelta
 
 **Protocolo de reentrenamiento.** Tras la selección, cada uno de los 512 pipelines se reajusta con los
 660 orígenes de 2023–2024 (etiquetas que terminan antes de 2025) y queda **congelado** durante la
-evaluación de 2025 y 2026. El manifiesto `artifacts/model_manifest.csv` registra, por modelo, semilla,
+evaluación de 2025. El manifiesto `artifacts/model_manifest.csv` registra, por modelo, semilla,
 hiperparámetros, MSE interno y SHA-256 de la serialización original; `artifacts/metadata.json` consolida
 librerías, semilla global, esquema de entrada y métricas del bucle externo (se regenera con
 `python src/build_artifacts_metadata.py`).

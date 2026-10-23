@@ -1,19 +1,30 @@
 # Capítulo 4 · Revisión sistemática de literatura y declaración de novedad
 
+```{admonition} Estado de esta sección
+:class: warning
+Una revisión sistemática exige consultar bases académicas (Scopus, Google Scholar, arXiv, IEEE Xplore…) y registrar
+resultados reales. Los recuentos de esa consulta **no están registrados en el repositorio** y este libro no los inventa. Se entrega
+(a) el protocolo, (b) la matriz de novedad con las columnas exigidas (recuentos **pendientes de completar por los autores**),
+(c) los antecedentes que sí se localizaron en una búsqueda web preliminar del 21-oct-2026 y (d) la literatura de base que usaron los autores (§4.5) y (e) una declaración de novedad
+**acotada**: el enfoque general (ML/XGBoost/HAR para volatilidad cripto) **ya existe en la literatura**; lo que se declara como
+no encontrado es la combinación específica descrita en §4.4.
+```
+
 ```{code-cell} ipython3
 :tags: [remove-cell]
+import re
 import pandas as pd
 from IPython.display import display
-from jbook_utils import glue_tbl
+from jbook_utils import BOOK, REPO, glue_tbl
 ```
 
 ## 4.1 Protocolo de revisión
 
-- **Bases de datos:** Scopus y Web of science.
+- **Bases de datos (≥3):** Scopus, IEEE Xplore, Google Scholar y arXiv (q-fin.ST / stat.ML).
 - **Periodo:** 2009–2026 (desde la formulación del HAR {cite}`corsi2009har`).
 - **Criterios de inclusión:** pronóstico de volatilidad (realizada o rodante) de criptoactivos; modelos HAR, ML o híbridos;
   evaluación fuera de muestra con pérdida explícita. **Exclusión:** pronóstico de precio/rentabilidad; solo redes neuronales; sin evaluación fuera de muestra.
-- **Cribado:** título/resumen → texto completo; dos revisores; discrepancias resueltas por consenso.
+- **Cribado:** título/resumen → texto completo; dos revisores; acuerdo medido con el coeficiente $\kappa$ de Cohen {cite}`cohen1960kappa`; discrepancias resueltas por consenso.
 - **Cadenas de búsqueda (5, en inglés y español):**
 
 ```{code-cell} ipython3
@@ -41,6 +52,9 @@ matriz.head(8)
 Matriz de novedad (muestra de 8 de 20 filas; 4 bases × 5 cadenas). Los recuentos están pendientes de ejecución.
 ```
 
+La {numref}`tbl-novedad` fija el diseño de la búsqueda; **no contiene resultados**. Los autores deben ejecutar las 20 búsquedas,
+registrar fecha y recuentos y completar el cribado antes de afirmar cualquier ausencia en la literatura.
+
 ## 4.2 Métodos afines (diferenciación)
 
 | Método | Fuente | Qué hace | Diferencia frente a HAR-Ridge + XGBoost |
@@ -52,7 +66,7 @@ Matriz de novedad (muestra de 8 de 20 filas; 4 bases × 5 cadenas). Los recuento
 | XGBoost | {cite}`chen2016xgboost` | *Boosting* de árboles | Es el componente no lineal. |
 | SVR | {cite}`drucker1997svr` | Regresión por vectores soporte | Benchmark del estudio. |
 
-## 4.3 Antecedentes localizados
+## 4.3 Antecedentes localizados (búsqueda web preliminar, 21-oct-2026)
 
 Dos búsquedas web generales (no sistemáticas; no sustituyen la matriz de §4.1) mostraron que **no es nuevo** usar ML, XGBoost o HAR para
 la volatilidad de criptomonedas:
@@ -65,7 +79,7 @@ la volatilidad de criptomonedas:
 | {cite}`garchxgb` | Híbrido GARCH + XGBoost para el índice JSE Top40. | Híbrido estadístico + XGBoost, pero con GARCH y en otro mercado. |
 
 En ninguno de los resultados vistos aparece la mezcla **Ridge sobre entradas HAR + XGBoost con un peso elegido por validación
-temporal**.
+temporal**, pero dos búsquedas generales no bastan para afirmarlo: debe confirmarse con la matriz completa de §4.1.
 
 ## 4.4 Declaración formal de novedad (R1)
 
@@ -84,10 +98,131 @@ encontraron estudios que apliquen la siguiente combinación al pronóstico de la
 **Alcance y límites.** La declaración se refiere únicamente a esa combinación. **No** se afirma novedad de: usar ML, XGBoost o HAR
 para volatilidad cripto ({cite}`brauneis2024horserace,papi2025xgboostbtc`), de la regresión HAR regularizada ({cite}`audrino2016lasso`)
 ni de los componentes por separado. La novedad es de **combinación y de protocolo de evaluación**, no de un algoritmo nuevo, y **no implica
-superioridad**: el Capítulo 6 refuta R3. Tampoco cumple R2 (usa `xgboost` y `scikit-learn`). La declaración es válida solo mientras la
+superioridad**: el Capítulo 6 refuta R3. R2 se cumple solo de forma parcial (usa `xgboost` y `scikit-learn` como aprendices base). La declaración es válida solo mientras la
 matriz de §4.1 se complete y no aparezca un antecedente exacto.
 ```
 
 **Diferenciación frente a métodos afines.** La tabla de §4.2 (GARCH, HAR-RV, HAR-Lasso, bosques aleatorios, XGBoost, SVR) y la de §4.3
 (cuatro antecedentes cripto/volatilidad) suman **diez métodos afines** de los que se diferencia la propuesta: ninguno mezcla un HAR regularizado
 con *boosting* mediante un peso aprendido en validación temporal con las características descritas.
+
+## 4.5 Literatura de base utilizada por los autores
+
+Los autores trabajaron con una lista de **50 referencias**, organizadas aquí en ocho bloques temáticos. La
+{numref}`tbl-literatura` indica, para cada bloque, qué papel cumple en el proyecto; el criterio es explícito: **«aplicada»** significa que
+la técnica se ejecutó en este repositorio; **«contexto»** que fundamenta el problema o la elección de métodos; **«no aplicada»** que se cita
+como alternativa o trabajo futuro y no se implementó.
+
+```{code-cell} ipython3
+# Clasificación de las 50 referencias por bloque y verificación contra references.bib
+bloques = {
+    "A. Riesgo financiero y medidas de riesgo": (["jorion2007var", "mcneil2015qrm", "artzner1999coherent", "acerbi2002coherence"], "Contexto"),
+    "B. Criptoactivos: economía, riesgo y factores": (["nakamoto2008bitcoin", "bohme2015bitcoin", "liu2021risks", "liu2022common", "bouri2017hedge", "baur2018bitcoin"], "Contexto"),
+    "C. Modelos de volatilidad condicional": (["engle1982arch", "bollerslev1986garch", "glosten1993relation", "hansen2012realized"], "Contexto (no comparada)"),
+    "D. Volatilidad de criptomonedas con GARCH y afines": (["dyhrberg2016garch", "katsiampa2017volatility", "chu2017garch", "caporale2019markov", "troster2019bitcoin", "trucios2019forecasting", "tiwari2019garchsv", "charles2019replication", "walther2019exogenous"], "Contexto (no comparada)"),
+    "E. Aprendizaje profundo y transformers": (["hochreiter1997lstm", "ozbayoglu2020deep", "vaswani2017attention", "nie2023patchtst", "wen2023transformers", "liu2024itransformer"], "No aplicada"),
+    "F. Texto, sentimiento y modelos de lenguaje": (["antweiler2004talk", "tetlock2007giving", "loughran2011liability", "devlin2019bert", "araci2019finbert", "wu2023bloomberggpt", "gruver2023llmtime"], "No aplicada"),
+    "G. Evaluación de pronósticos de riesgo (VaR/ES)": (["kupiec1995techniques", "christoffersen1998evaluating", "engle2004caviar", "patton2019dynamic"], "No aplicada"),
+    "H. Estadística, optimización y diagnóstico": (["cohen1960kappa", "shahriari2016human", "freire2025wind", "rasmussen2006gp", "jones1998ego", "broock1996bds", "cover2006information", "diebold1995comparing", "newey1987simple", "holm1979simple"], "Aplicada (parcial)"),
+}
+bib = (BOOK / "references.bib").read_text(encoding="utf-8")
+claves = re.findall(r"^@\w+\{([^,]+),", bib, re.M)
+todas = [k for ks, _ in bloques.values() for k in ks]
+assert len(todas) == 50 and len(set(todas)) == 50, "la lista debe tener 50 referencias únicas"
+faltan = [k for k in todas if k not in claves]
+assert not faltan, f"claves sin entrada en references.bib: {faltan}"
+assert (REPO / "results" / "bds.csv").exists()   # el test BDS se ejecutó en una fase previa del proyecto
+tabla = pd.DataFrame({"referencias": {b: len(ks) for b, (ks, _) in bloques.items()},
+                      "papel en el proyecto": {b: u for b, (_, u) in bloques.items()}})
+glue_tbl("tbl-literatura", tabla)
+tabla
+```
+
+```{glue:figure} tbl-literatura
+:name: tbl-literatura
+:figwidth: 100%
+
+Bloques temáticos de las 50 referencias de los autores y su papel en el proyecto.
+```
+
+### A. Riesgo financiero y medidas de riesgo (4)
+
+Los textos de Jorion {cite}`jorion2007var` y McNeil, Frey y Embrechts {cite}`mcneil2015qrm`, junto con los resultados axiomáticos de
+Artzner et al. {cite}`artzner1999coherent` y Acerbi y Tasche {cite}`acerbi2002coherence` sobre medidas coherentes y *expected shortfall*,
+establecen **por qué importa pronosticar la volatilidad**: es el insumo de las medidas de riesgo de mercado (VaR y ES). Este bloque justifica
+el problema (Capítulo 0), pero el proyecto **no calcula VaR ni ES**: se limita al pronóstico de la volatilidad.
+
+### B. Criptoactivos (6)
+
+Nakamoto {cite}`nakamoto2008bitcoin` define el sistema que origina el mercado; Böhme et al. {cite}`bohme2015bitcoin` describen su economía,
+tecnología y gobernanza. Liu y Tsyvinski {cite}`liu2021risks` y Liu, Tsyvinski y Wu {cite}`liu2022common` documentan los riesgos, rendimientos y
+factores comunes de los criptoactivos, lo que apoya tratar a BTC, ETH, BNB y XRP como un mercado con dinámica propia y factor común (la alta
+correlación de volatilidades del Capítulo 2). Bouri et al. {cite}`bouri2017hedge` y Baur et al. {cite}`baur2018bitcoin` discuten el papel de
+Bitcoin como cobertura o activo especulativo, un debate sobre su naturaleza que ayuda a interpretar por qué su volatilidad es alta y variable.
+
+### C. Modelos de volatilidad condicional (4)
+
+ARCH {cite}`engle1982arch`, GARCH {cite}`bollerslev1986garch`, el modelo asimétrico GJR {cite}`glosten1993relation` y Realized GARCH
+{cite}`hansen2012realized` forman la familia de referencia de la volatilidad condicional. Son el punto de comparación natural de un modelo
+HAR. **Limitación reconocida:** el proyecto **no incluye un GARCH** entre sus 512 modelos; sus referencias simples son la persistencia y el HAR
+diario OLS. Un benchmark GARCH/GJR es la ausencia más evidente frente a esta literatura y queda como trabajo futuro.
+
+### D. Volatilidad de criptomonedas con GARCH y afines (9)
+
+Nueve trabajos aplican y comparan modelos de la familia GARCH a Bitcoin y otros criptoactivos: Dyhrberg {cite}`dyhrberg2016garch`,
+Katsiampa {cite}`katsiampa2017volatility`, Chu et al. {cite}`chu2017garch`, Caporale y Zekokh {cite}`caporale2019markov` (cambio de régimen),
+Tröster et al. {cite}`troster2019bitcoin` (GARCH y GAS), Trucíos {cite}`trucios2019forecasting` (medidas de riesgo robustas), Tiwari et al.
+{cite}`tiwari2019garchsv` (GARCH frente a volatilidad estocástica) y Charles y Darné {cite}`charles2019replication` (réplica y robustez), más
+Walther et al. {cite}`walther2019exogenous`, que pronostican volatilidad con datos mixtos (MIDAS) y determinantes exógenos. El patrón común es
+**enfoque econométrico paramétrico**; frente a él, este proyecto usa **entradas tipo HAR y aprendizaje automático regularizado** con validación
+temporal y pruebas de comparación (posicionamiento que se retoma en §4.3–4.4). Esta literatura confirma que modelar la volatilidad cripto con
+modelos de varianza condicional es un enfoque establecido, no nuevo.
+
+### E. Aprendizaje profundo y transformers (6)
+
+LSTM {cite}`hochreiter1997lstm`, la revisión de aprendizaje profundo en finanzas {cite}`ozbayoglu2020deep`, el *Transformer*
+{cite}`vaswani2017attention` y sus variantes para series temporales (PatchTST {cite}`nie2023patchtst`, la revisión de Wen et al.
+{cite}`wen2023transformers` e iTransformer {cite}`liu2024itransformer`) describen la frontera de la predicción con redes neuronales. **No se
+aplican**: el curso excluye redes neuronales y *deep learning* en el modelo original, de modo que este bloque delimita el alcance y señala la
+comparación pendiente como trabajo futuro.
+
+### F. Texto, sentimiento y modelos de lenguaje (7)
+
+Antweiler y Frank {cite}`antweiler2004talk`, Tetlock {cite}`tetlock2007giving` y Loughran y McDonald {cite}`loughran2011liability` muestran
+que el texto financiero contiene información útil; BERT {cite}`devlin2019bert`, FinBERT {cite}`araci2019finbert`, BloombergGPT
+{cite}`wu2023bloomberggpt` y los pronosticadores de series con modelos de lenguaje {cite}`gruver2023llmtime` extienden esa idea con modelos
+preentrenados. **No se aplican**: el estudio usa únicamente precios de Binance Spot, sin variables de sentimiento ni de texto. Se citan como
+fuentes de variables exógenas para extensiones futuras.
+
+### G. Evaluación de pronósticos de riesgo (4)
+
+La prueba de Kupiec {cite}`kupiec1995techniques`, la evaluación de pronósticos de intervalo de Christoffersen
+{cite}`christoffersen1998evaluating`, CAViaR {cite}`engle2004caviar` y los modelos semiparamétricos para ES y VaR de Patton, Ziegel y Chen
+{cite}`patton2019dynamic` son el estándar para **validar medidas de riesgo** (cobertura y condicionalidad de las excedencias). **No se aplican**,
+porque el objeto pronosticado es la volatilidad y no un cuantil; si el trabajo se extiende a VaR/ES, estas pruebas son el paso siguiente.
+
+### H. Estadística, optimización y diagnóstico (10)
+
+Este bloque sí tiene uso directo:
+
+- **Diebold–Mariano** {cite}`diebold1995comparing`, con varianza HAC de **Newey–West** {cite}`newey1987simple` (núcleo de Bartlett) y corrección de
+  **Holm** {cite}`holm1979simple`: son las pruebas del Capítulo 6 (el ajuste HLN adicional es de {cite}`harvey1997testing`).
+- **Información mutua** {cite}`cover2006information`: el diagnóstico de entradas del Capítulo 2 §2.10.
+- **Prueba BDS** {cite}`broock1996bds`: se ejecutó en una fase previa del proyecto (`results/bds.csv`), **no** forma parte de los análisis de este libro.
+- **Optimización bayesiana:** la revisión de Shahriari et al. {cite}`shahriari2016human`, los procesos gaussianos {cite}`rasmussen2006gp` y la
+  optimización global eficiente {cite}`jones1998ego` fundamentan la familia de métodos secuenciales sobre modelo sustituto. El optimizador
+  «bayesiano» del proyecto es TPE de Optuna {cite}`akiba2019optuna`, que **no** usa procesos gaussianos: estas fuentes enmarcan la idea general, no
+  el algoritmo exacto.
+- **Pronóstico híbrido con optimización en otro dominio:** Freire et al. {cite}`freire2025wind` (según su título, pronóstico de energía eólica con redes
+  híbridas en Brasil) ilustra el uso de hibridación y optimización de hiperparámetros fuera de las finanzas.
+- **Acuerdo entre revisores:** el $\kappa$ de Cohen {cite}`cohen1960kappa` se propone para el cribado de la revisión (§4.1). No debe confundirse
+  con la *d* de Cohen del Capítulo 6, que proviene de {cite}`cohen1988power`.
+
+### Síntesis y brecha respecto de esta literatura
+
+La literatura cripto de volatilidad que los autores recopilaron es mayoritariamente **econométrica (GARCH y variantes)** o de **aprendizaje
+profundo/texto**. Este proyecto ocupa un punto intermedio: **regresión regularizada con entradas HAR y *boosting* de árboles**, evaluada con
+inferencia predictiva formal. Tres brechas deben declararse: (i) **no hay benchmark GARCH/GJR/Realized GARCH**; (ii) **no se compara con redes
+profundas ni transformers**, por restricción del curso; (iii) **no se evalúan cuantiles de riesgo** (VaR/ES). Además, la lista de los autores no
+incluye varias fuentes que el libro necesita y que se agregaron a `references.bib` (Corsi sobre HAR, Chen y Guestrin sobre XGBoost, Hansen sobre
+SPA/MCS, Politis y Romano sobre *bootstrap* estacionario, entre otras); conviene que los autores confirmen que las leyeron.

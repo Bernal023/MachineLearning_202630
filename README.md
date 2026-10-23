@@ -9,25 +9,30 @@
 
 ## Qué hace el proyecto
 
-Pronostica la **volatilidad diaria futura** (desviación estándar móvil poblacional de los retornos logarítmicos diarios, en %, sin anualizar)
-de **BTC, ETH, BNB y XRP** (pares USDT, Binance Spot, 2020-2025, velas de 1 minuto) para **7 horizontes** (1 a 7 días) y **4 ventanas**
-de volatilidad (7, 14, 21 y 28 días): 16 configuraciones y 112 series. **No** pronostica precio ni rentabilidad y no es una recomendación de inversión.
+Pronostica la **volatilidad diaria futura** (desviación estándar móvil poblacional de los retornos logarítmicos diarios, en %, sin anualizar) de **BTC, ETH, BNB y XRP** (pares USDT, Binance Spot,
+cierres de un minuto, 2023-2025, 1.096 fechas diarias) para **7 horizontes** (1 a 7 días) y **4 ventanas** de volatilidad (7, 14, 21 y 28 días). **No** pronostica precios ni rentabilidad y no es una recomendación de inversión.
 
-El modelo vigente es **HAR-Ridge + XGBoost**: una regresión Ridge sobre entradas tipo HAR (Corsi, 2009) combinada linealmente con XGBoost mediante
-un peso y una penalización elegidos por validación temporal. No usa redes neuronales.
+El modelo propuesto es **HAR-Ridge + XGBoost**: una regresión Ridge sobre entradas tipo HAR (Corsi, 2009) combinada con XGBoost mediante un peso λ elegido en validación temporal. Se compara con k-NN, Ridge, Lasso,
+Random Forest, XGBoost y SVR lineal (más un Decision Tree añadido) sobre los mismos objetivos y fechas. No usa redes neuronales.
 
-## Resultados principales
+## Resultados principales (2025, ventana w = 21, 358 orígenes)
 
-| Indicador (MSE macro, puntos porcentuales²) | 2025 (358 orígenes) | 2026 ene–ago (236 orígenes) |
+| Modelo | MSE | RMSE | MAE | R² |
+|---|---:|---:|---:|---:|
+| **HAR-Ridge + XGBoost** | **0,18444** | **0,38601** | **0,25372** | **0,8445** |
+| Persistencia | 0,37183 | 0,54614 | 0,34405 | 0,6885 |
+| Lasso (Optuna TPE) | 0,17825 | 0,37874 | 0,23904 | 0,8500 |
+
+| Búsqueda de los rivales | DM-Holm7 favorables al HAR | IC95 % positivos |
 |---|---:|---:|
-| Persistencia | 0,8282 | 0,7951 |
-| HAR diario OLS (1/7/28) | 0,6247 | 0,6086 |
-| **HAR-Ridge + XGBoost (vigente)** | **0,4647** | **0,4560** |
+| Grid (original) | 7/7 | 7/7 |
+| Random Search | 3/7 | 3/7 |
+| Optuna TPE | 2/7 | 3/7 |
+| DEAP | 4/7 | 4/7 |
 
-- Se evaluaron **512 pipelines** (7 familias × 4 optimizadores × 16 configuraciones, más 64 híbridos HAR-XG) con **validación anidada y purga**.
-- El modelo vigente reduce el MSE de la persistencia ≈ 44 % (2025) y ≈ 43 % (2026).
-- **Ninguna variante lo supera de forma estadísticamente sólida** (DM–HLN con Holm, SPA, MCS 90 %, IC bootstrap estacionario).
-- Las evaluaciones de 2025 y 2026 son **retrospectivas**: esos periodos ya habían sido examinados.
+- **El respaldo al HAR depende de la búsqueda; la superioridad requiere evidencia estadística ajustada.** Con Optuna, Lasso mejora al original en las cuatro métricas, sin ventaja significativa bajo DM-Holm7.
+- La persistencia queda fuera del MCS al 90 %. El SPA global no rechaza (p = 0,106).
+- Las conclusiones usan **solo 2025**, evaluación **retrospectiva** (periodo ya examinado); el periodo de 2026 del repositorio no se usa para concluir.
 
 ## Estado frente a las condiciones del modelo original
 
@@ -35,7 +40,7 @@ un peso y una penalización elegidos por validación temporal. No usa redes neur
 |---|---|
 | R1 — Novedad | Declarada de forma **acotada y condicionada**: novedad de la *combinación* y del protocolo, no del enfoque (hay antecedentes de ML/HAR en cripto). Falta completar los recuentos de la matriz de búsqueda (Cap. 4). |
 | R2 — Implementación algorítmica propia | **Parcial**: entradas HAR, objetivo relativo y selección de la mezcla son propios; `Ridge` y `xgboost` son importados. |
-| R3 — Superioridad estadística | **Refutada** (Cap. 6). |
+| R3 — Superioridad estadística | **No verificada de forma general** (Cap. 6). |
 
 ## Estructura del repositorio
 

@@ -10,7 +10,7 @@ from jbook_utils import R, REPO, SEED, read_csv, glue_tbl
 
 ## 9.1 Entorno y semilla
 
-- **Semilla global:** `42` (estimadores y búsquedas; las semillas 7 y 99 solo se usaron en análisis de sensibilidad, nunca para elegir resultados).
+- **Semilla global:** `42` (estimadores y búsquedas).
 - **Python:** 3.11 para compilar el libro (CI); los resultados originales se calcularon con las versiones registradas abajo.
 - **Entorno del libro:** `requirements-book.txt` (versiones fijadas). **Entorno de entrenamiento:** `requirements.txt`,
   `requirements-xgboost.txt` y `dashboard_data/final_review_20261018/files/results/final_regression_20261018/requirements-lock.txt`.
@@ -75,7 +75,7 @@ La {numref}`tbl-maestra` resume la tabla completa, que se exporta a `artifacts/m
 modelo, pliegue, hiperparámetros y métricas está en `outer_metrics.csv` (3.072 filas) y el de cada evaluación de búsqueda en
 `master_trials.csv` (28.672 filas), ambos en `dashboard_data/final_review_20261018/files/results/final_regression_20261018/`.
 Nota: **el modelo original (HAR-Ridge + XGBoost) no figura como control del bucle externo** por política del protocolo (se
-seleccionó globalmente en 2024); solo sus pronósticos congelados de 2025 y 2026 entran en la comparación retrospectiva.
+seleccionó globalmente en 2024); solo sus pronósticos congelados de 2025 entran en la comparación retrospectiva de las conclusiones.
 
 ## 9.4 Bibliografía
 
