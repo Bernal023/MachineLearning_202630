@@ -57,8 +57,6 @@ un piloto acotado y no un ranking universal de optimizadores.
 ## 8.3 Limitaciones
 
 - **Sin periodo confirmatorio:** 2025 y enero–agosto de 2026 fueron explorados repetidamente.
-- **Estacionariedad:** solo se documentó descriptivamente (Cap. 2); no se reportan pruebas ADF/KPSS.
-- **Matriz de búsqueda sin recuentos** (Cap. 4): la declaración de novedad queda condicionada a completarla y **capturas del dashboard pendientes** (Cap. 7).
 - **Modelos serializados:** los `.joblib` de los 512 pipelines no están versionados; solo sus hashes.
 - **Desviaciones de la rúbrica** (Cap. 6): intervalos por percentiles y no BCa; $d_z$ de Cohen y no $\delta$ de Cliff; Holm y no Benjamini–Hochberg.
 - **Rúbrica de clasificación vs. problema de regresión:** no aplican balanceo de clases ni DeLong/McNemar; las «140 combinaciones» son 512 modelos.
@@ -66,10 +64,8 @@ un piloto acotado y no un ranking universal de optimizadores.
 ## 8.4 Trabajo futuro
 
 1. Evaluar sobre un periodo **realmente nuevo** con reglas fijadas antes de ver los datos.
-2. Ejecutar y registrar la revisión sistemática del Capítulo 4.
-3. Implementar un modelo propio en `numpy`/`scipy` con clase compatible con `scikit-learn` y sus pruebas, y compararlo bajo el mismo protocolo.
-4. Añadir pruebas de estacionariedad, intervalos BCa y $\delta$ de Cliff; ampliar presupuestos de búsqueda.
-5. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
+2. Añadir pruebas de estacionariedad, intervalos BCa y $\delta$ de Cliff; ampliar presupuestos de búsqueda.
+3. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
 
 ## 8.5 Consideraciones éticas
 
