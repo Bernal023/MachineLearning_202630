@@ -42,9 +42,6 @@ matriz.head(8)
 Matriz de novedad (muestra de 8 de 20 filas; 4 bases × 5 cadenas). Los recuentos están pendientes de ejecución.
 ```
 
-La {numref}`tbl-novedad` fija el diseño de la búsqueda; **no contiene resultados**. Los autores deben ejecutar las 20 búsquedas,
-registrar fecha y recuentos y completar el cribado antes de afirmar cualquier ausencia en la literatura.
-
 ## 4.2 Métodos afines (diferenciación)
 
 | Método | Fuente | Qué hace | Diferencia frente a HAR-Ridge + XGBoost |
