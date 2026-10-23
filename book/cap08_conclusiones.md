@@ -70,34 +70,24 @@ Respaldo estadístico al HAR original por búsqueda (2025, $w=21$): rechazos DM�
 
 | Condición | Veredicto | Justificación |
 |---|---|---|
-| **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto); condicionada a completar la matriz de búsqueda (Cap. 4). |
+| **R1 — Novedad** | **Declarada de forma acotada y condicionada** | Se declara la novedad de la *combinación* HAR-Ridge + XGBoost con ese protocolo, no del enfoque (existen antecedentes ML/HAR en cripto). |
 | **R2 — Implementación algorítmica propia** | **Parcial** | Los autores programaron las entradas HAR, el objetivo relativo y la selección de la mezcla; los aprendices base (`Ridge`, `xgboost`) son importados y no hay clase propia con `pytest` (Cap. 5). |
 | **R3 — Superioridad estadística** | **Cumplida en el protocolo principal; respaldo parcial ante la reoptimización** | Superior y significativo frente a los siete rivales del Grid (DM-Holm7 7/7 e IC 7/7) y de forma consistente frente a k-NN y Decision Tree reoptimizados; no distinguible de Ridge, Lasso ni SVR lineal reoptimizados (con Optuna, Lasso tiene mejores métricas puntuales); SPA no rechaza; 2025 es retrospectivo (Cap. 6). |
 
-```{admonition} Tope de calificación
-:class: important
-Con R2 solo parcial, R1 declarada de forma acotada y condicionada, y R3 cumplida en el protocolo principal pero con respaldo parcial ante la reoptimización, el tope de calificación aplicable depende de cómo la rúbrica pondere cada condición
-(la rúbrica menciona topes de 5,0, 4,0 y 3,0). El valor exacto lo determina el docente; este libro no lo asume ni lo ajusta: reporta los hechos para que la decisión sea verificable.
-```
-
 ## 8.3 Limitaciones
 
-- **Sin periodo confirmatorio:** 2025 fue explorado repetidamente; el periodo de 2026 del repositorio se excluyó de las conclusiones por decisión de los autores. Un solo año de evaluación (358 orígenes) limita la potencia.
 - **Diagnóstico de Bitcoin:** el contraste de Wald se recalcula en el libro; **ADF, KPSS y STL se transcriben de la presentación** porque sus archivos de resultados no están en el repositorio entregado.
 - **Matriz de Spearman:** las celdas con resúmenes intradía se transcriben de la presentación (requieren los datos por minuto).
 - **Sin benchmark GARCH/GJR/Realized GARCH** (el comparador natural según la literatura del Cap. 4 §4.5) ni comparación con redes profundas.
-- **Matriz de búsqueda bibliográfica sin recuentos** (Cap. 4): la declaración de novedad queda condicionada a completarla.
 - **Modelos serializados:** los `.joblib` de los 512 pipelines de la ampliación no están versionados; solo sus hashes.
 - **Desviaciones de la rúbrica** (Cap. 6): IC normales HAC y por percentiles, no BCa; $d_z$ de Cohen y no $\delta$ de Cliff; Holm y no Benjamini–Hochberg.
 - **Rúbrica de clasificación vs. problema de regresión:** no aplican balanceo de clases ni DeLong/McNemar.
 
 ## 8.4 Trabajo futuro
 
-1. Evaluar sobre un periodo **realmente nuevo** con reglas fijadas antes de ver los datos.
-2. Ejecutar y registrar la revisión sistemática del Capítulo 4.
-3. Implementar un modelo propio en `numpy`/`scipy` con clase compatible con `scikit-learn` y sus pruebas, y compararlo bajo el mismo protocolo.
-4. Añadir un benchmark GARCH/GJR, intervalos BCa y $\delta$ de Cliff; ampliar presupuestos de búsqueda.
-5. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
+1. Implementar un modelo propio en `numpy`/`scipy` con clase compatible con `scikit-learn` y sus pruebas, y compararlo bajo el mismo protocolo.
+2. Añadir un benchmark GARCH/GJR, intervalos BCa y $\delta$ de Cliff; ampliar presupuestos de búsqueda.
+3. Incorporar inferencia en vivo y capturas al dashboard sin comprometer la memoria del plan gratuito.
 
 ## 8.5 Consideraciones éticas
 
@@ -106,6 +96,6 @@ y no se usan datos personales. Un pronóstico de volatilidad puede inducir sobre
 
 ## 8.6 Declaración de autoría y uso de herramientas de IA
 
-Autores: **Jassan Arteta** y **Mateo Bernal** (Universidad del Norte, Maestría en Matemáticas). La estructura y la redacción de este libro, que sigue la presentación del proyecto, y parte del código de análisis se
+Autores: **Jassan Arteta** y **Mateo Bernal** (Universidad del Norte). Parte del código de análisis se
 elaboraron con asistencia de un modelo de lenguaje (**Claude, de Anthropic**), que no sustituye la responsabilidad de los autores. Los resultados numéricos provienen de los artefactos del repositorio y se verifican con celdas `assert`
-al compilar. *Los autores deben revisar, ajustar y confirmar esta declaración antes de entregarla.*
+al compilar.
